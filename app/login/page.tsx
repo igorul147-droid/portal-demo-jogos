@@ -11,8 +11,12 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [erro, setErro] = useState("");
-  const [carregando, setCarregando] = useState(false);
+  const [mostrarRecuperacao, setMostrarRecuperacao] = useState(false);
+  const [dadosRecuperados, setDadosRecuperados] = useState<{
+    nome: string;
+    email: string;
+    cpf: string;
+  } | null>(null);
 
   function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -49,7 +53,40 @@ export default function LoginPage() {
         setErro("Email ou senha incorretos");
         setCarregando(false);
       }
-    }, 800);
+  function handleRecuperacao() {
+    setErro("");
+
+    // Busca dados armazenados no localStorage
+    const nomeArmazenado = window.localStorage.getItem("demo-wallet-nome");
+    const emailArmazenado = window.localStorage.getItem("demo-wallet-email");
+    const cpfArmazenado = window.localStorage.getItem("demo-wallet-cpf");
+
+    if (nomeArmazenado && emailArmazenado) {
+      setDadosRecuperados({
+        nome: nomeArmazenado,
+        email: emailArmazenado,
+        cpf: cpfArmazenado || "Não informado"
+      });
+    } else {
+      setErro("Nenhuma conta encontrada neste dispositivo");
+    }
+  }
+
+  function handleResetarConta() {
+    if (confirm("Tem certeza que deseja resetar sua conta? Todos os dados serão perdidos.")) {
+      // Remove todos os dados do localStorage
+      window.localStorage.removeItem("demo-wallet-nome");
+      window.localStorage.removeItem("demo-wallet-email");
+      window.localStorage.removeItem("demo-wallet-cpf");
+      window.localStorage.removeItem("demo-wallet-data-nascimento");
+      window.localStorage.removeItem("demo-wallet-saldo");
+
+      setDadosRecuperados(null);
+      setMostrarRecuperacao(false);
+      setErro("");
+      alert("Conta resetada com sucesso! Você pode criar uma nova conta.");
+      router.push("/cadastro");
+    }
   }
 
   return (
@@ -111,11 +148,68 @@ export default function LoginPage() {
 
           {/* Footer */}
           <div className="mt-6 text-center text-sm text-white/60">
+            <button
+              type="button"
+              onClick={() => setMostrarRecuperacao(!mostrarRecuperacao)}
+              className="text-amber-400 hover:text-amber-300 transition mb-2 block w-full"
+            >
+              Esqueci minha senha
+            </button>
             Não tem conta?{" "}
             <Link href="/cadastro" className="text-amber-400 hover:text-amber-300 transition">
               Cadastre-se agora
             </Link>
           </div>
+
+          {/* Seção de Recuperação */}
+          {mostrarRecuperacao && (
+            <div className="mt-6 rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur">
+              <h3 className="mb-4 text-lg font-semibold text-white">Recuperar Conta</h3>
+
+              {!dadosRecuperados ? (
+                <div className="space-y-4">
+                  <p className="text-sm text-white/70">
+                    Clique em "Buscar Dados" para recuperar suas informações de conta armazenadas neste dispositivo.
+                  </p>
+                  <button
+                    onClick={handleRecuperacao}
+                    className="w-full rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-3 font-semibold text-white transition hover:scale-[1.02]"
+                  >
+                    Buscar Dados
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="rounded-2xl border border-green-400/20 bg-green-400/10 p-4">
+                    <h4 className="font-semibold text-green-300 mb-2">Dados Encontrados:</h4>
+                    <div className="text-sm text-white/80 space-y-1">
+                      <p><strong>Nome:</strong> {dadosRecuperados.nome}</p>
+                      <p><strong>Email:</strong> {dadosRecuperados.email}</p>
+                      <p><strong>CPF:</strong> {dadosRecuperados.cpf}</p>
+                    </div>
+                    <p className="text-xs text-white/60 mt-2">
+                      💡 Use qualquer senha de 6+ caracteres para fazer login
+                    </p>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setMostrarRecuperacao(false)}
+                      className="flex-1 rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
+                    >
+                      Fechar
+                    </button>
+                    <button
+                      onClick={handleResetarConta}
+                      className="flex-1 rounded-2xl bg-gradient-to-r from-red-500 to-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:scale-[1.02]"
+                    >
+                      Resetar Conta
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </main>
