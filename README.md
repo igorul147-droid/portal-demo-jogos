@@ -1,36 +1,128 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BetClean - Plataforma de Jogos
 
-## Getting Started
+Plataforma profissional de jogos autorais com integração PSP (Exacta Pay) para pagamentos reais.
 
-First, run the development server:
+## 🚀 Funcionalidades
 
+- 🎮 **3 Jogos Autorais**: Fortuna Neon (Slot), Turbo Rise (Aviator), Orbit Wheel (Roleta)
+- 💰 **Carteira Dupla**: Saldo demo para prática + Saldo real para apostas
+- 💳 **Pagamentos Reais**: Integração com Exacta Pay (Pix + Criptomoedas)
+- 📊 **Sistema de Ranking**: Competição entre jogadores
+- 🔐 **PSP Seguro**: Transações rastreadas e conformidade regulatória
+
+## 🛠️ Configuração
+
+### 1. Instalar Dependências
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Configurar Exacta Pay
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Acesse: https://dashboard.exactapay.com
+2. Crie sua conta de merchant
+3. Obtenha suas credenciais:
+   - `EXACTA_API_KEY`
+   - `EXACTA_SECRET_KEY`
+   - `EXACTA_MERCHANT_ID`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Configurar Variáveis de Ambiente
 
-## Learn More
+Copie o arquivo de exemplo:
+```bash
+cp .env.example .env.local
+```
 
-To learn more about Next.js, take a look at the following resources:
+Preencha com suas credenciais:
+```env
+# Exacta Pay Configuration
+EXACTA_API_URL=https://api.exactapay.com/v1
+EXACTA_API_KEY=sua_api_key_aqui
+EXACTA_SECRET_KEY=sua_secret_key_aqui
+EXACTA_MERCHANT_ID=seu_merchant_id_aqui
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Webhook (opcional)
+EXACTA_WEBHOOK_SECRET=seu_webhook_secret_aqui
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+NODE_ENV=production
+```
 
-## Deploy on Vercel
+### 4. Executar o Projeto
+```bash
+npm run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 💰 Sistema de Pagamentos
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Modo Desenvolvimento (Mock)
+Quando as credenciais não estão configuradas, o sistema funciona em modo mock:
+- ✅ Gera transações simuladas
+- ✅ Mostra QR codes de exemplo
+- ✅ Simula confirmações automáticas
+- ✅ Perfeito para testes
+
+### Modo Produção (Real)
+Com credenciais configuradas:
+- ✅ Integração real com Exacta Pay
+- ✅ Pix instantâneo
+- ✅ Criptomoedas (BTC, ETH, USDT)
+- ✅ Webhooks para confirmações automáticas
+- ✅ Anti-fraude e conformidade
+
+## 🎯 Fluxo de Pagamentos
+
+### Depósito Pix
+1. Usuário clica "Depositar"
+2. Sistema gera transação via Exacta Pay
+3. QR Code exibido na tela
+4. Usuário escaneia e paga
+5. PSP confirma automaticamente
+6. Saldo creditado instantaneamente
+
+### Depósito Cripto
+1. Sistema gera endereço único
+2. Usuário envia cripto para o endereço
+3. PSP monitora blockchain
+4. Confirmação automática
+5. Saldo creditado
+
+### Saques
+- Transferência direta para conta bancária
+- Processamento em até 2 dias úteis
+- Sem taxas adicionais
+
+## 🔒 Segurança
+
+- ✅ **SSL 256-bit** em todas as conexões
+- ✅ **PCI DSS Compliant** (quando usar cartões)
+- ✅ **Dados criptografados** em trânsito e repouso
+- ✅ **Anti-fraude** integrado no PSP
+- ✅ **KYC/AML** pronto para implementação
+
+## 📋 Próximos Passos
+
+1. **Obter Licença**: Regularize com órgãos competentes
+2. **KYC Integration**: Implemente verificação de identidade
+3. **Webhook Setup**: Configure notificações automáticas
+4. **Monitoramento**: Adicione analytics e alertas
+5. **Suporte**: Implemente chat ao vivo
+
+## 🏗️ Arquitetura
+
+```
+├── lib/exacta-pay.ts          # Cliente PSP
+├── app/carteira/              # Interface de pagamentos
+├── components/DemoWalletProvider.tsx  # Gerenciamento de saldos
+├── app/jogos/                 # Jogos autorais
+└── .env.local                 # Credenciais (não commitar)
+```
+
+## 📞 Suporte
+
+Para dúvidas sobre integração:
+- Exacta Pay: https://exactapay.com/support
+- Documentação: https://docs.exactapay.com
+
+---
+
+**⚠️ Importante**: Esta plataforma é para uso profissional. Certifique-se de cumprir todas as regulamentações locais antes de aceitar pagamentos reais.
