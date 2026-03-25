@@ -109,21 +109,64 @@ export default function Home() {
       </section>
 
       <section id="catalogo" className="mx-auto max-w-7xl px-6 pb-16">
-        <div className="mb-8 flex items-end justify-between gap-4">
-          <div>
-            <p className="text-sm text-white/50">Catálogo inicial</p>
-            <h3 className="text-2xl font-bold sm:text-3xl">Jogos em destaque</h3>
+        {/* Jogos PG Soft */}
+        <div className="mb-12">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-white">🎰 Jogos PG Soft</h2>
+            <span className="text-sm text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full">
+              Demo Gratuito
+            </span>
           </div>
-
-          <span className="rounded-2xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white/80">
-            {jogos.length} jogos
-          </span>
-        </div>
-
-        <div className="grid gap-5 md:grid-cols-3">
-          {jogos.map((jogo) => (
-            <GameCard key={jogo.titulo} {...jogo} />
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <GameCard
+              titulo="Sweet Bonanza"
+              categoria="Slots"
+              descricao="Slots com frutas doces e multiplicadores"
+              rota="/jogos/sweet-bonanza"
+              gradiente="from-pink-500/30 via-purple-500/20 to-orange-400/20"
+              botao="Jogar Demo"
+            />
+            <GameCard
+              titulo="Mahjong Ways"
+              categoria="Mahjong"
+              descricao="Mahjong temático com 243 linhas"
+              rota="/jogos/mahjong-ways"
+              gradiente="from-blue-500/30 via-cyan-500/20 to-green-400/20"
+              botao="Jogar Demo"
+            />
+            <GameCard
+              titulo="Fortune Tiger"
+              categoria="Slots"
+              descricao="Tigre da sorte com rodadas grátis"
+              rota="/jogos/fortune-tiger"
+              gradiente="from-yellow-500/30 via-orange-500/20 to-red-400/20"
+              botao="Jogar Demo"
+            />
+            <GameCard
+              titulo="Gates of Olympus"
+              categoria="Mitologia"
+              descricao="Mitologia grega com Zeus"
+              rota="/jogos/gates-olympus"
+              gradiente="from-purple-500/30 via-blue-500/20 to-indigo-400/20"
+              botao="Jogar Demo"
+            />
+            <GameCard
+              titulo="Wild West Gold"
+              categoria="Western"
+              descricao="Faroeste com jackpots progressivos"
+              rota="/jogos/wild-west-gold"
+              gradiente="from-amber-500/30 via-yellow-500/20 to-orange-400/20"
+              botao="Jogar Demo"
+            />
+            <GameCard
+              titulo="Dragon Hatch"
+              categoria="Fantasia"
+              descricao="Dragões e ovos misteriosos"
+              rota="/jogos/dragon-hatch"
+              gradiente="from-green-500/30 via-emerald-500/20 to-teal-400/20"
+              botao="Jogar Demo"
+            />
+          </div>
         </div>
       </section>
 
