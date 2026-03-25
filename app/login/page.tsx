@@ -11,6 +11,8 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [erro, setErro] = useState("");
+  const [carregando, setCarregando] = useState(false);
   const [mostrarRecuperacao, setMostrarRecuperacao] = useState(false);
   const [dadosRecuperados, setDadosRecuperados] = useState<{
     nome: string;
@@ -39,7 +41,6 @@ export default function LoginPage() {
       // Busca no localStorage
       const nomeArmazenado = window.localStorage.getItem("demo-wallet-nome");
       const emailArmazenado = window.localStorage.getItem("demo-wallet-email");
-      const senhaArmazenada = window.localStorage.getItem("demo-wallet-senha");
 
       // Para este demo, aceita qualquer email/senha válida
       // Em produção, faria validação contra backend
@@ -53,6 +54,9 @@ export default function LoginPage() {
         setErro("Email ou senha incorretos");
         setCarregando(false);
       }
+    }, 800);
+  }
+
   function handleRecuperacao() {
     setErro("");
 
