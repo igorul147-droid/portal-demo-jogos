@@ -41,7 +41,7 @@ export default function DragonHatchPage() {
               </div>
             </div>
             <div className="text-right">
-              <p className="text-sm text-white/60">Saldo Demo</p>
+              <p className="text-sm text-white/60">Saldos Disponíveis</p>
               <p className="text-lg font-bold text-amber-400">
                 R$ {saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </p>

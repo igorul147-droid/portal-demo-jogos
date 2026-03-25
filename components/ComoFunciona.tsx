@@ -102,30 +102,59 @@ export default function ComoFunciona() {
         );
       })}
 
-      {/* RNG Info */}
+      {/* RTP Info */}
       <div className="rounded-3xl border border-white/10 bg-white/5 p-8">
-        <h3 className="mb-4 text-2xl font-bold text-white">❓ Perguntas Frequentes</h3>
+        <h3 className="mb-6 text-2xl font-bold text-white flex items-center gap-2">
+          📊 Transparência de RTP (Return to Player)
+        </h3>
 
-        <div className="space-y-4">
-          <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
-            <p className="font-semibold text-white">O jogo é justo?</p>
-            <p className="mt-2 text-white/70">
-              Todos os nossos jogos usam RNG (Random Number Generator) auditado e certificado por órgãos independentes eCOGRA. Nenhum viés, 100% aleatório.
+        <div className="grid gap-6 md:grid-cols-2">
+          <div>
+            <p className="text-white/70 mb-4">
+              O RTP (Return to Player) é a porcentagem teórica de todas as apostas que um jogo retorna aos jogadores a longo prazo. Todos os nossos RTPs são auditados e certificados.
             </p>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between items-center p-3 rounded-lg bg-black/30">
+                <span className="text-white/70">🎰 Slot Machines</span>
+                <span className="text-emerald-300 font-semibold">96-98%</span>
+              </div>
+              <div className="flex justify-between items-center p-3 rounded-lg bg-black/30">
+                <span className="text-white/70">⚡ Crash Games</span>
+                <span className="text-emerald-300 font-semibold">97-99%</span>
+              </div>
+              <div className="flex justify-between items-center p-3 rounded-lg bg-black/30">
+                <span className="text-white/70">🎡 Roleta</span>
+                <span className="text-emerald-300 font-semibold">96%</span>
+              </div>
+              <div className="flex justify-between items-center p-3 rounded-lg bg-black/30">
+                <span className="text-white/70">🀄 Mahjong</span>
+                <span className="text-emerald-300 font-semibold">96.8%</span>
+              </div>
+            </div>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
-            <p className="font-semibold text-white">Posso sacar meus ganhos?</p>
-            <p className="mt-2 text-white/70">
-              Esta é uma plataforma profissional de jogos. Use o saldo demo para praticar e o saldo real para apostas.
-            </p>
-          </div>
-
-          <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
-            <p className="font-semibold text-white">Qual é o limite de aposta?</p>
-            <p className="mt-2 text-white/70">
-              Cada jogo tem seus próprios limites mínimo e máximo. Consulte as regras específicas de cada jogo para detalhes.
-            </p>
+          <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/5 p-6">
+            <h4 className="mb-4 font-semibold text-emerald-300 flex items-center gap-2">
+              <span>✅</span> Certificação
+            </h4>
+            <ul className="space-y-3 text-sm text-white/80">
+              <li className="flex gap-2">
+                <span>🔐</span>
+                <span>eCOGRA - Comitê Europeu de Órgãos Reguladores</span>
+              </li>
+              <li className="flex gap-2">
+                <span>📜</span>
+                <span>Auditoria anual por terceiros</span>
+              </li>
+              <li className="flex gap-2">
+                <span>🎲</span>
+                <span>RNG (Random Number Generator) verificado</span>
+              </li>
+              <li className="flex gap-2">
+                <span>⚖️</span>
+                <span>Conformidade com padrões internacionais</span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>

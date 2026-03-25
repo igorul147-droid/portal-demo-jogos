@@ -15,7 +15,7 @@ export default function Footer() {
               D
             </div>
             <p className="text-sm text-white/70">
-              BetClean - Plataforma de jogos autorais com experiência demo segura e responsável.
+              BetClean - Plataforma Premium de Jogos com Segurança 24/7 e Suporte Profissional.
             </p>
             <div className="flex gap-3">
               <a href="#" className="rounded-lg bg-white/5 p-2 text-white/60 transition hover:text-white hover:bg-white/10">

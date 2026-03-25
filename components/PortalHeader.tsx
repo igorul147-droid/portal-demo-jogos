@@ -31,8 +31,8 @@ export default function PortalHeader({
             D
           </div>
           <div className="hidden sm:block">
-            <p className="text-sm text-white/60">Portal Demo</p>
             <p className="text-lg font-semibold">BetClean</p>
+            <p className="text-xs text-white/50">Plataforma Premium de Jogos</p>
           </div>
         </Link>
 
@@ -45,17 +45,20 @@ export default function PortalHeader({
             <Link href="/#catalogo" className="text-sm text-white/70 transition hover:text-white">
               Jogos
             </Link>
-            <Link href="/#ranking" className="text-sm text-white/70 transition hover:text-white">
-              Ranking
+            <Link href="/analise" className="text-sm text-white/70 transition hover:text-white">
+              Análise
+            </Link>
+            <Link href="/referencia" className="text-sm text-white/70 transition hover:text-white">
+              Referência
             </Link>
             <Link href="/carteira" className="text-sm text-white/70 transition hover:text-white">
               Carteira
             </Link>
+            <Link href="/suporte" className="text-sm text-white/70 transition hover:text-white">
+              Suporte
+            </Link>
             <Link href="/perfil" className="text-sm text-white/70 transition hover:text-white">
               Perfil
-            </Link>
-            <Link href="/cadastro" className="text-sm text-white/70 transition hover:text-white">
-              Cadastro
             </Link>
           </nav>
         )}
@@ -70,7 +73,7 @@ export default function PortalHeader({
               </div>
 
               <div className="hidden sm:block rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-sm text-emerald-300">
-                Saldo demo: {formatarMoedas(saldo)}
+                💰 Saldo: {formatarMoedas(saldo)}
               </div>
 
               <Link

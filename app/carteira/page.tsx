@@ -281,11 +281,11 @@ export default function CarteiraPage() {
 
         {/* Balance Cards */}
         <div className="grid gap-4 md:grid-cols-2 mb-8">
-          {/* Saldo Demo */}
+          {/* Saldo Prática */}
           <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-amber-400/20 to-orange-500/10 p-6">
-            <p className="text-sm text-white/60 mb-2">💰 Saldo Demo</p>
+            <p className="text-sm text-white/60 mb-2">💰 Saldo Prática</p>
             <p className="text-3xl font-bold text-amber-300">{formatarMoedas(saldo)}</p>
-            <p className="text-xs text-white/40 mt-2">Para testar jogos</p>
+            <p className="text-xs text-white/40 mt-2">Modo de aprendizado</p>
           </div>
 
           {/* Saldo Real */}
