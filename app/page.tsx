@@ -192,6 +192,14 @@ export default function Home() {
               botao="Jogar"
             />
             <GameCard
+              titulo="Fortune Rabbit"
+              categoria="Slots"
+              descricao="Coelho da fortuna com fogos e rodadas bônus"
+              rota="/jogos/fortune-rabbit"
+              gradiente="from-sky-500/30 via-fuchsia-500/20 to-violet-400/20"
+              botao="Jogar"
+            />
+            <GameCard
               titulo="Gates of Olympus"
               categoria="Mitologia"
               descricao="Mitologia grega com Zeus"
@@ -208,11 +216,19 @@ export default function Home() {
               botao="Jogar"
             />
             <GameCard
-              titulo="Dragon Hatch"
+              titulo="Fortune Dragon"
               categoria="Fantasia"
-              descricao="Dragões e ovos misteriosos"
-              rota="/jogos/dragon-hatch"
-              gradiente="from-green-500/30 via-emerald-500/20 to-teal-400/20"
+              descricao="Dragão da fortuna com bônus e multiplicadores"
+              rota="/jogos/fortune-dragon"
+              gradiente="from-pink-500/30 via-violet-500/20 to-purple-400/20"
+              botao="Jogar"
+            />
+            <GameCard
+              titulo="Fortune Ox"
+              categoria="Prosperidade"
+              descricao="Boi da fortuna com rodadas orientais premium"
+              rota="/jogos/fortune-ox"
+              gradiente="from-orange-500/30 via-red-500/20 to-amber-400/20"
               botao="Jogar"
             />
           </div>

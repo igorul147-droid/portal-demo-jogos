@@ -1,8 +1,8 @@
-﻿"use client";
+"use client";
 
 import FortuneSeriesPage from "@/components/FortuneSeriesPage";
 
-export default function DragonHatchPage() {
+export default function FortuneDragonPage() {
   return (
     <FortuneSeriesPage
       title="Fortune Dragon"
