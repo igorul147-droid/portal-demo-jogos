@@ -64,7 +64,7 @@ export default function GatesOlympusPage() {
 
           <div className="aspect-video bg-black rounded-xl overflow-hidden mb-6">
             <iframe
-              src="https://demogamesfree.pragmaticplay.net/gs2c/openGame.do?lang=en&cur=EUR&gameSymbol=vs20olympus&websiteUrl=https%3A%2F%2Fdemogamesfree.pragmaticplay.net&jurisdiction=99"
+              src="https://demogamesfree.pragmaticplay.net/gs2c/openGame.do?lang=en&cur=EUR&gameSymbol=vs20olympgate&websiteUrl=https%3A%2F%2Fdemogamesfree.pragmaticplay.net&jurisdiction=99"
               className="w-full h-full border-0"
               title="Gates of Olympus Demo"
               allowFullScreen

@@ -168,6 +168,66 @@ export default function Home() {
             />
           </div>
         </div>
+
+        {/* Jogos Originais BetClean */}
+        <div className="mb-12">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-white">⚡ Jogos Originais</h2>
+            <span className="text-sm text-emerald-400 bg-emerald-400/10 px-3 py-1 rounded-full">
+              100% Nativos
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <GameCard
+              titulo="Mines"
+              categoria="Estratégia"
+              descricao="Revele gems, evite bombas e multiplique seus ganhos"
+              rota="/jogos/mines"
+              gradiente="from-red-500/30 via-orange-500/20 to-amber-400/20"
+              botao="Jogar Agora"
+            />
+            <GameCard
+              titulo="Tower"
+              categoria="Desafio"
+              descricao="Suba a torre escolhendo o bloco correto por andar"
+              rota="/jogos/tower"
+              gradiente="from-purple-500/30 via-indigo-500/20 to-blue-400/20"
+              botao="Jogar Agora"
+            />
+            <GameCard
+              titulo="Hi-Lo"
+              categoria="Cartas"
+              descricao="Adivinhe se a próxima carta é maior ou menor"
+              rota="/jogos/hi-lo"
+              gradiente="from-blue-500/30 via-cyan-500/20 to-sky-400/20"
+              botao="Jogar Agora"
+            />
+            <GameCard
+              titulo="Fortuna Neon"
+              categoria="Slot"
+              descricao="Slot machine neon com linhas de pagamento especiais"
+              rota="/jogos/fortuna-neon"
+              gradiente="from-fuchsia-500/30 via-violet-500/20 to-cyan-400/20"
+              botao="Jogar Agora"
+            />
+            <GameCard
+              titulo="Turbo Rise"
+              categoria="Crash"
+              descricao="Assista o avião decolar e saque antes do crash"
+              rota="/jogos/turbo-rise"
+              gradiente="from-blue-400/30 via-cyan-500/20 to-purple-500/20"
+              botao="Jogar Agora"
+            />
+            <GameCard
+              titulo="Orbit Wheel"
+              categoria="Roleta"
+              descricao="Roleta com multiplicadores e giro instantâneo"
+              rota="/jogos/orbit-wheel"
+              gradiente="from-emerald-400/30 via-teal-500/20 to-sky-500/20"
+              botao="Jogar Agora"
+            />
+          </div>
+        </div>
       </section>
 
       <section id="ranking" className="mx-auto max-w-7xl px-6 py-20 space-y-8">
