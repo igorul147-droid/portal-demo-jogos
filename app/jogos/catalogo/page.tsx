@@ -71,20 +71,26 @@ export default function CatalogoPage() {
   }
 
   return (
-    <main className="min-h-screen bg-neutral-100 text-neutral-900">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(245,158,11,0.16),_transparent_24%),radial-gradient(circle_at_bottom_left,_rgba(59,130,246,0.12),_transparent_28%),#05070d] text-white">
       <PortalHeader />
 
       <section className="mx-auto max-w-7xl px-4 py-8">
-        <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
-          <h1 className="mb-4 text-center text-3xl font-bold">Slot Lobby</h1>
+        <div className="surface-card rounded-[30px] border border-white/10 p-4 shadow-[0_30px_80px_rgba(0,0,0,0.3)] sm:p-6">
+          <div className="mb-5 text-center">
+            <p className="text-sm text-amber-300">BetClean Casino Lobby</p>
+            <h1 className="mt-2 text-3xl font-bold headline-glow sm:text-4xl">Slot Lobby</h1>
+            <p className="mt-2 text-sm text-white/60 sm:text-base">
+              Catálogo premium com filtros por provedor, acesso rápido e a mesma atmosfera da página inicial.
+            </p>
+          </div>
 
-          <div className="mb-4 flex items-center gap-2 rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2">
-            <span className="text-neutral-500">🔍</span>
+          <div className="mb-4 flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
+            <span className="text-white/45">🔍</span>
             <input
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
               placeholder="Pesquisar jogos"
-              className="w-full bg-transparent text-sm outline-none"
+              className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/35"
             />
           </div>
 
@@ -93,8 +99,8 @@ export default function CatalogoPage() {
               onClick={() => setProviderAtivo("Todos")}
               className={`rounded-xl px-4 py-2 text-sm font-semibold transition ${
                 providerAtivo === "Todos"
-                  ? "bg-blue-600 text-white"
-                  : "border border-neutral-300 bg-white text-neutral-600"
+                  ? "pill-brand"
+                  : "border border-white/10 bg-white/5 text-white/70 hover:bg-white/10"
               }`}
             >
               Todos
@@ -105,8 +111,8 @@ export default function CatalogoPage() {
                 onClick={() => setProviderAtivo(provider)}
                 className={`rounded-xl px-4 py-2 text-sm font-semibold transition ${
                   providerAtivo === provider
-                    ? "bg-blue-600 text-white"
-                    : "border border-neutral-300 bg-white text-neutral-600"
+                    ? "pill-brand"
+                    : "border border-white/10 bg-white/5 text-white/70 hover:bg-white/10"
                 }`}
               >
                 {provider}
@@ -119,19 +125,19 @@ export default function CatalogoPage() {
               <button
                 key={`${jogo.provider}-${jogo.nome}`}
                 onClick={() => abrirJogo(jogo.rota)}
-                className="rounded-2xl border border-neutral-200 bg-white p-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                className="group rounded-[24px] border border-white/10 bg-white/5 p-3 text-left shadow-[0_16px_40px_rgba(0,0,0,0.18)] transition hover:-translate-y-1 hover:border-amber-400/30 hover:bg-white/[0.07]"
               >
-                <div className="mb-2 flex h-24 items-center justify-center rounded-xl bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 text-4xl">
+                <div className="mb-3 flex h-24 items-center justify-center rounded-2xl border border-white/10 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_50%),linear-gradient(135deg,rgba(30,41,59,0.9)_0%,rgba(15,23,42,0.95)_100%)] text-4xl shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition group-hover:border-amber-400/30">
                   {jogo.capa}
                 </div>
-                <p className="line-clamp-1 text-sm font-semibold">{jogo.nome}</p>
-                <p className="mt-1 text-xs text-neutral-500">{jogo.provider}</p>
+                <p className="line-clamp-1 text-sm font-semibold text-white">{jogo.nome}</p>
+                <p className="mt-1 text-xs uppercase tracking-[0.2em] text-white/45">{jogo.provider}</p>
               </button>
             ))}
           </div>
 
           {filtrados.length === 0 && (
-            <p className="py-10 text-center text-sm text-neutral-500">Nenhum jogo encontrado para este filtro.</p>
+            <p className="py-10 text-center text-sm text-white/45">Nenhum jogo encontrado para este filtro.</p>
           )}
         </div>
       </section>
