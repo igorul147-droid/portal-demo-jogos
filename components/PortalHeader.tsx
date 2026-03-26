@@ -42,7 +42,7 @@ export default function PortalHeader({
             <Link href="/" className="text-sm text-white/70 transition hover:text-white">
               Início
             </Link>
-            <Link href="/#catalogo" className="text-sm text-white/70 transition hover:text-white">
+            <Link href="/jogos/catalogo" className="text-sm text-white/70 transition hover:text-white">
               Jogos
             </Link>
             <Link href="/analise" className="text-sm text-white/70 transition hover:text-white">
@@ -132,7 +132,7 @@ export default function PortalHeader({
               Início
             </Link>
             <Link
-              href="/#catalogo"
+              href="/jogos/catalogo"
               onClick={() => setMenuAberto(false)}
               className="rounded-lg px-4 py-2 text-white/70 hover:bg-white/10 transition"
             >
