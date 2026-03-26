@@ -76,7 +76,7 @@ export default function GatesOlympusPage() {
         <iframe
           src={gameUrl}
           className="h-full w-full border-0"
-          title="Gates of Olympus Demo"
+          title="Gates of Olympus"
           allowFullScreen
         />
       </div>

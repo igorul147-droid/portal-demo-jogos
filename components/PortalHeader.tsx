@@ -6,7 +6,10 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 function formatarMoedas(valor: number) {
-  return `${valor.toLocaleString("pt-BR")} moedas`;
+  return valor.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
 }
 
 type PortalHeaderProps = {
@@ -16,7 +19,7 @@ type PortalHeaderProps = {
 export default function PortalHeader({
   mostrarMenu = true,
 }: PortalHeaderProps) {
-  const { saldo, nomeUsuario, resetarTudoGlobal } = useDemoWallet();
+  const { saldo, nomeUsuario } = useDemoWallet();
   const [menuAberto, setMenuAberto] = useState(false);
 
   return (
@@ -27,8 +30,8 @@ export default function PortalHeader({
           href="/"
           className="flex items-center gap-3"
         >
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white font-bold text-black shrink-0">
-            D
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-300 via-yellow-400 to-orange-500 font-black text-black shrink-0 shadow-[0_0_20px_rgba(251,191,36,0.35)]">
+            BC
           </div>
           <div className="hidden sm:block">
             <p className="text-lg font-semibold">BetClean</p>
@@ -75,20 +78,6 @@ export default function PortalHeader({
               <div className="hidden sm:block rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-sm text-emerald-300">
                 💰 Saldo: {formatarMoedas(saldo)}
               </div>
-
-              <Link
-                href="/carteira"
-                className="hidden sm:block rounded-2xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
-              >
-                💳 Carteira
-              </Link>
-
-              <button
-                onClick={resetarTudoGlobal}
-                className="hidden sm:block rounded-2xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
-              >
-                Resetar
-              </button>
             </>
           ) : (
             <>
@@ -166,16 +155,6 @@ export default function PortalHeader({
               <p className="text-xs text-white/50 mb-2">Saldo</p>
               <p className="text-sm font-medium text-emerald-300">{formatarMoedas(saldo)}</p>
             </div>
-
-            <button
-              onClick={() => {
-                resetarTudoGlobal();
-                setMenuAberto(false);
-              }}
-              className="rounded-lg px-4 py-2 text-white/70 hover:bg-white/10 transition text-left"
-            >
-              Resetar Tudo
-            </button>
           </nav>
         </div>
       )}

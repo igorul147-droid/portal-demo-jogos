@@ -11,7 +11,10 @@ import Footer from "@/components/Footer";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 
 function formatarMoedas(valor: number) {
-  return `${valor.toLocaleString("pt-BR")} moedas`;
+  return valor.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
 }
 
 const jogos = [
@@ -114,7 +117,7 @@ export default function Home() {
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-white">🎰 Jogos PG Soft</h2>
             <span className="text-sm text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full">
-              Demo Gratuito
+              Catálogo Premium
             </span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -124,7 +127,7 @@ export default function Home() {
               descricao="Slots com frutas doces e multiplicadores"
               rota="/jogos/sweet-bonanza"
               gradiente="from-pink-500/30 via-purple-500/20 to-orange-400/20"
-              botao="Jogar Demo"
+              botao="Jogar"
             />
             <GameCard
               titulo="Mahjong Ways"
@@ -132,7 +135,7 @@ export default function Home() {
               descricao="Mahjong temático com 243 linhas"
               rota="/jogos/mahjong-ways"
               gradiente="from-blue-500/30 via-cyan-500/20 to-green-400/20"
-              botao="Jogar Demo"
+              botao="Jogar"
             />
             <GameCard
               titulo="Fortune Tiger"
@@ -140,7 +143,7 @@ export default function Home() {
               descricao="Tigre da sorte com rodadas grátis"
               rota="/jogos/fortune-tiger"
               gradiente="from-yellow-500/30 via-orange-500/20 to-red-400/20"
-              botao="Jogar Demo"
+              botao="Jogar"
             />
             <GameCard
               titulo="Gates of Olympus"
@@ -148,7 +151,7 @@ export default function Home() {
               descricao="Mitologia grega com Zeus"
               rota="/jogos/gates-olympus"
               gradiente="from-purple-500/30 via-blue-500/20 to-indigo-400/20"
-              botao="Jogar Demo"
+              botao="Jogar"
             />
             <GameCard
               titulo="Wild West Gold"
@@ -156,7 +159,7 @@ export default function Home() {
               descricao="Faroeste com jackpots progressivos"
               rota="/jogos/wild-west-gold"
               gradiente="from-amber-500/30 via-yellow-500/20 to-orange-400/20"
-              botao="Jogar Demo"
+              botao="Jogar"
             />
             <GameCard
               titulo="Dragon Hatch"
@@ -164,7 +167,7 @@ export default function Home() {
               descricao="Dragões e ovos misteriosos"
               rota="/jogos/dragon-hatch"
               gradiente="from-green-500/30 via-emerald-500/20 to-teal-400/20"
-              botao="Jogar Demo"
+              botao="Jogar"
             />
           </div>
         </div>

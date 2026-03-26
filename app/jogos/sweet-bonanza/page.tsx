@@ -26,7 +26,7 @@ export default function SweetBonanzaPage() {
               </button>
               <div>
                 <h1 className="text-xl font-bold text-white">Sweet Bonanza</h1>
-                <p className="text-sm text-white/60">Pragmatic Play - Demo Gratuito</p>
+                <p className="text-sm text-white/60">Pragmatic Play</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -74,7 +74,7 @@ export default function SweetBonanzaPage() {
             <iframe
               src="https://demogamesfree.pragmaticplay.net/gs2c/openGame.do?lang=pt&cur=BRL&gameSymbol=vs20fruitsw&websiteUrl=https%3A%2F%2Fdemogamesfree.pragmaticplay.net&jurisdiction=99"
               className="w-full h-full border-0"
-              title="Sweet Bonanza Demo"
+              title="Sweet Bonanza"
               allowFullScreen
               onLoad={() => setCarregando(false)}
             />
@@ -91,13 +91,13 @@ export default function SweetBonanzaPage() {
             </div>
             <div className="bg-white/5 rounded-xl p-4 text-center">
               <h3 className="font-semibold text-white mb-2">💰 Apostas</h3>
-              <p className="text-sm text-white/70">Demo gratuito — sem risco financeiro real</p>
+              <p className="text-sm text-white/70">Configuração flexível de aposta e sessão segura</p>
             </div>
           </div>
 
           <div className="mt-4 bg-amber-400/10 border border-amber-400/20 rounded-xl p-4">
             <p className="text-amber-300 text-sm text-center">
-              ⚠️ Jogo demo gratuito. Para apostas reais é necessário conta verificada e saldo real.
+              ⚠️ Jogue com responsabilidade. Defina seus limites antes de iniciar.
             </p>
           </div>
         </div>
