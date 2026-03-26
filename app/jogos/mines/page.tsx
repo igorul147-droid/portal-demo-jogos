@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import Footer from "@/components/Footer";
+import { formatBRL } from "@/lib/currency";
 
 const GRID_SIZE = 25;
 
@@ -142,7 +143,7 @@ export default function MinesPage() {
           <div className="text-right">
             <p className="text-sm text-white/60">Saldo</p>
             <p className="text-lg font-bold text-amber-400">
-              {saldo.toLocaleString("pt-BR")} moedas
+              {formatBRL(saldo)}
             </p>
           </div>
         </div>
@@ -157,7 +158,7 @@ export default function MinesPage() {
               : "bg-red-500/20 border border-red-400/40 text-red-300"
           }`}>
             {resultado === "win"
-              ? `🎉 Você ganhou +${ganhoAtual.toLocaleString("pt-BR")} moedas!`
+              ? `🎉 Você ganhou +${formatBRL(ganhoAtual)}!`
               : "💥 Bomba! Você perdeu esta rodada."}
           </div>
         )}
@@ -187,7 +188,7 @@ export default function MinesPage() {
               <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-4">
                 <p className="text-sm text-emerald-300 mb-1">💰 Ganho atual</p>
                 <p className="text-3xl font-bold text-emerald-300">
-                  {ganhoAtual.toLocaleString("pt-BR")}
+                  {formatBRL(ganhoAtual)}
                 </p>
                 <p className="text-sm text-white/60 mt-1">
                   Multiplicador: <span className="text-white font-semibold">{multiplicadorAtual}x</span>

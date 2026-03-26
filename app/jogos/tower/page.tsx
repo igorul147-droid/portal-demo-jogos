@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import Footer from "@/components/Footer";
+import { formatBRL } from "@/lib/currency";
 
 const LINHAS = 8;
 const COLUNAS = 3;
@@ -119,7 +120,7 @@ export default function TowerPage() {
           <div className="text-right">
             <p className="text-sm text-white/60">Saldo</p>
             <p className="text-lg font-bold text-amber-400">
-              {saldo.toLocaleString("pt-BR")} moedas
+              {formatBRL(saldo)}
             </p>
           </div>
         </div>
@@ -134,7 +135,7 @@ export default function TowerPage() {
               : "bg-red-500/20 border border-red-400/40 text-red-300"
           }`}>
             {resultado === "win"
-              ? `🏆 Você ganhou ${ganhoFinal.toLocaleString("pt-BR")} moedas!`
+              ? `🏆 Você ganhou ${formatBRL(ganhoFinal)}!`
               : "💥 Bomba! Você bateu no bloco errado."}
           </div>
         )}
@@ -202,7 +203,7 @@ export default function TowerPage() {
             {jogando && andarAtual > 0 && (
               <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-4">
                 <p className="text-sm text-emerald-300 mb-1">💰 Garantido agora</p>
-                <p className="text-2xl font-bold text-emerald-300">{ganhoSecao.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-emerald-300">{formatBRL(ganhoSecao)}</p>
                 <p className="text-sm text-white/60">Andar {andarAtual} de {LINHAS}</p>
               </div>
             )}
@@ -257,7 +258,7 @@ export default function TowerPage() {
                   disabled={andarAtual === 0}
                   className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 py-4 font-bold text-white text-lg transition hover:scale-[1.02] disabled:opacity-50"
                 >
-                  💰 Sacar ({ganhoSecao.toLocaleString()})
+                  💰 Sacar ({formatBRL(ganhoSecao)})
                 </button>
               )}
             </div>

@@ -16,16 +16,16 @@ export default function PromAndBonus() {
       icone: Gift,
       cor: 'from-amber-400 to-orange-500',
       badge: '50%',
-      detalhes: 'Ao se cadastrar, você recebe 50% a mais no seu saldo inicial! Por exemplo: se começar com 10.000 moedas, receberá 5.000 moedas extras. Válido apenas para novos usuários.',
+      detalhes: 'Ao se cadastrar, você recebe 50% a mais no saldo inicial. Exemplo: se começar com R$ 100,00, recebe mais R$ 50,00 em bônus promocional. Válido para novos usuários.',
       acao: 'cadastro',
     },
     {
       titulo: 'Missões Diárias',
-      descricao: 'Complete desafios e ganhe moedas extras todos os dias',
+      descricao: 'Complete desafios e ganhe créditos extras todos os dias',
       icone: Zap,
       cor: 'from-yellow-400 to-amber-500',
       badge: 'Novo',
-      detalhes: 'Complete missões diárias como "Jogar 5 rodadas" ou "Ganhar 3 vezes seguidas" para ganhar moedas extras. Resete a cada 24 horas e acumule recompensas!',
+      detalhes: 'Complete missões diárias como "Jogar 5 rodadas" ou "Ganhar 3 vezes seguidas" para ganhar créditos extras. Missões renovadas a cada 24 horas.',
       acao: 'ativar',
     },
     {
@@ -34,7 +34,7 @@ export default function PromAndBonus() {
       icone: Award,
       cor: 'from-emerald-400 to-teal-500',
       badge: 'Ativo',
-      detalhes: 'Ganhe pontos de fidelidade a cada moeda apostada. Ao atingir milestones (1.000, 5.000, 10.000 moedas), desbloqueie novos benefícios e bônus personalizados.',
+      detalhes: 'Ganhe pontos de fidelidade a cada valor apostado. Ao atingir marcos de atividade, desbloqueie benefícios e bônus personalizados.',
       acao: 'ativar',
     },
     {

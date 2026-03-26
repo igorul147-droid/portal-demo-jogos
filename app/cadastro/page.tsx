@@ -131,7 +131,7 @@ export default function CadastroPage() {
 
       // Registra o novo usuário
       setNomeUsuario(nome);
-      setSaldo(10000); // Saldo inicial de 10.000 moedas
+      setSaldo(10000); // Saldo inicial de conta
 
       // Salva no localStorage para persistência
       window.localStorage.setItem("demo-wallet-nome", nome.trim());

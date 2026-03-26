@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import PortalHeader from "@/components/PortalHeader";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import StatsCard from "@/components/StatsCard";
+import { formatBRL } from "@/lib/currency";
 
 const opcoes = [
   { label: "Verde", multiplicador: 2, cor: "bg-emerald-500/20 text-emerald-300" },
@@ -15,7 +16,7 @@ const opcoes = [
 ];
 
 function formatarMoedas(valor: number) {
-  return `${valor.toLocaleString("pt-BR")} moedas`;
+  return formatBRL(valor);
 }
 
 function sortearResultado() {
@@ -110,9 +111,9 @@ export default function OrbitWheelPage() {
       setTotalGanho((valor) => valor + premio);
       setMaiorPremio((valor) => Math.max(valor, premio));
       setMensagem(
-        `Resultado ${resultado.label} (${resultado.multiplicador}x): +${premio.toLocaleString(
-          "pt-BR"
-        )} moedas.`
+        `Resultado ${resultado.label} (${resultado.multiplicador}x): +${formatarMoedas(
+          premio
+        )}.`
       );
       setGirando(false);
     }, 900);

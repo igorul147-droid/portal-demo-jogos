@@ -6,9 +6,10 @@ import PortalHeader from "@/components/PortalHeader";
 import Footer from "@/components/Footer";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import StatsCard from "@/components/StatsCard";
+import { formatBRL } from "@/lib/currency";
 
 function formatarMoedas(valor: number) {
-  return `${valor.toLocaleString("pt-BR")} moedas`;
+  return formatBRL(valor);
 }
 
 function gerarCrashMultiplicador() {

@@ -21,7 +21,7 @@ export default function ComoFunciona() {
       categoria: 'Crash / Multiplicador',
       icone: Zap,
       como: [
-        'Faça uma aposta entre 50 e 1.000 moedas',
+        'Faça uma aposta entre R$ 0,50 e R$ 10,00',
         'O multiplicador começa em 1.00x e cresce continuamente',
         'Clique em "Encerrar" antes que ele caia para ganhar',
         'Se não clicar a tempo, perde a aposta',

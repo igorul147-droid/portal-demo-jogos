@@ -9,12 +9,10 @@ import ComoFunciona from "@/components/ComoFunciona";
 import CertificadoRNG from "@/components/CertificadoRNG";
 import Footer from "@/components/Footer";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
+import { formatBRL } from "@/lib/currency";
 
 function formatarMoedas(valor: number) {
-  return valor.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  });
+  return formatBRL(valor);
 }
 
 const jogos = [
@@ -62,37 +60,84 @@ export default function Home() {
     <main className="min-h-screen bg-neutral-950 text-white">
       <PortalHeader />
 
-      <section className="mx-auto flex max-w-7xl flex-col items-center px-6 py-20 text-center">
-        <span className="mb-6 inline-block rounded-full border border-white/10 bg-white/5 px-4 py-1 text-sm text-white/70">
-          Plataforma autoral com carteira integrada
-        </span>
+      <section className="relative overflow-hidden border-b border-white/10 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.22),transparent_45%),radial-gradient(circle_at_80%_20%,rgba(14,165,233,0.15),transparent_42%)]">
+        <div className="mx-auto max-w-7xl px-6 pb-16 pt-14 sm:pt-20">
+          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+            <div>
+              <span className="mb-5 inline-flex rounded-full border border-amber-400/25 bg-amber-400/10 px-4 py-1 text-xs font-semibold uppercase tracking-wider text-amber-200">
+                Plataforma regulada-ready
+              </span>
+              <h1 className="headline-glow max-w-3xl text-4xl font-extrabold tracking-tight sm:text-6xl">
+                Experiencia Premium de Casino com foco em confiança e performance
+              </h1>
+              <p className="mt-5 max-w-2xl text-base text-white/72 sm:text-lg">
+                Ola, {nomeUsuario}. Operacao com arquitetura robusta, telemetria em tempo real,
+                padrao visual institucional e jornada otimizada para conversao.
+              </p>
+              <div className="mt-7 flex flex-wrap gap-3">
+                <a
+                  href="/jogos/catalogo"
+                  className="pill-brand rounded-2xl px-6 py-3 text-sm font-bold transition hover:brightness-105"
+                >
+                  Entrar no Lobby
+                </a>
+                <a
+                  href="/perfil"
+                  className="rounded-2xl border border-white/20 bg-white/8 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/12"
+                >
+                  Ver Perfil da Conta
+                </a>
+              </div>
+            </div>
 
-        <h2 className="max-w-5xl text-4xl font-bold tracking-tight sm:text-6xl">
-          Bem-vindo, {nomeUsuario}
-        </h2>
+            <div className="surface-card rounded-3xl p-5">
+              <p className="text-xs uppercase tracking-wide text-white/50">Painel em tempo real</p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
+                  <p className="text-xs text-white/50">Saldo operacional</p>
+                  <p className="mt-1 text-xl font-bold text-emerald-300">{formatarMoedas(totalGanhoGlobal - totalApostadoGlobal + 10000)}</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
+                  <p className="text-xs text-white/50">NPS interno</p>
+                  <p className="mt-1 text-xl font-bold text-sky-300">82</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
+                  <p className="text-xs text-white/50">RTP medio</p>
+                  <p className="mt-1 text-xl font-bold text-white">96.7%</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
+                  <p className="text-xs text-white/50">Disponibilidade</p>
+                  <p className="mt-1 text-xl font-bold text-emerald-300">99.96%</p>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        <p className="mt-6 max-w-2xl text-base text-white/70 sm:text-lg">
-          Seu portal já tem múltiplos jogos, saldo global, ranking local,
-          perfil persistente e estatísticas compartilhadas.
-        </p>
-
-        <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-          <a
-            href="/jogos/fortuna-neon"
-            className="rounded-2xl bg-white px-6 py-3 font-semibold text-black transition hover:scale-[1.02]"
-          >
-            Começar agora
-          </a>
-
-          <a
-            href="#catalogo"
-            className="rounded-2xl border border-white/15 bg-white/5 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
-          >
-            Explorar jogos
-          </a>
+          <div className="mt-10 grid gap-3 md:grid-cols-4">
+            <div className="surface-card rounded-2xl px-4 py-3 text-sm">
+              <p className="text-white/55">Licenciamento</p>
+              <p className="font-semibold text-white">Pipeline em andamento</p>
+            </div>
+            <div className="surface-card rounded-2xl px-4 py-3 text-sm">
+              <p className="text-white/55">KYC e AML</p>
+              <p className="font-semibold text-white">Fluxo estruturado</p>
+            </div>
+            <div className="surface-card rounded-2xl px-4 py-3 text-sm">
+              <p className="text-white/55">Compliance</p>
+              <p className="font-semibold text-white">Logs rastreaveis</p>
+            </div>
+            <div className="surface-card rounded-2xl px-4 py-3 text-sm">
+              <p className="text-white/55">Suporte</p>
+              <p className="font-semibold text-white">24/7 multicanal</p>
+            </div>
+          </div>
         </div>
+      </section>
 
-        <div className="mt-14 grid w-full max-w-5xl gap-4 md:grid-cols-4">
+      <section className="mx-auto max-w-7xl px-6 py-10">
+        <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+          <p className="text-xs uppercase tracking-wide text-white/45">Indicadores globais</p>
+          <div className="mt-4 grid w-full gap-4 md:grid-cols-4">
           <StatsCard label="Rodadas globais" value={String(totalRodadasGlobal)} />
           <StatsCard
             label="Total apostado"
@@ -108,6 +153,7 @@ export default function Home() {
             value={`${lucroGlobal >= 0 ? "+" : ""}${formatarMoedas(lucroGlobal)}`}
             highlight={lucroGlobal >= 0}
           />
+          </div>
         </div>
       </section>
 

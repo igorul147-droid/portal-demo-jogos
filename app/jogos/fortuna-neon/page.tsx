@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import PortalHeader from "@/components/PortalHeader";
 import StatsCard from "@/components/StatsCard";
+import { formatBRL } from "@/lib/currency";
 
 const simbolos = ["💎", "7", "👑", "⚡", "🍀"] as const;
 const gradeInicial = ["💎", "7", "👑", "⚡", "💎", "🍀", "👑", "⚡", "7"];
@@ -57,9 +58,7 @@ function avaliarGrade(grade: string[], aposta: number) {
       premioTotal += premioLinha;
       linhasVencedoras.push(index);
       detalhes.push(
-        `Linha ${index + 1}: 3x ${simboloInfo[a].label} (+${premioLinha.toLocaleString(
-          "pt-BR"
-        )})`
+        `Linha ${index + 1}: 3x ${simboloInfo[a].label} (+${formatBRL(premioLinha)})`
       );
     }
   });
@@ -68,7 +67,7 @@ function avaliarGrade(grade: string[], aposta: number) {
 }
 
 function formatarMoedas(valor: number) {
-  return `${valor.toLocaleString("pt-BR")} moedas`;
+  return formatBRL(valor);
 }
 
 export default function FortunaNeonPage() {
@@ -163,7 +162,7 @@ export default function FortunaNeonPage() {
 
       const resultadoTexto =
         avaliacao.premioTotal > 0
-          ? `Vitória: +${avaliacao.premioTotal.toLocaleString("pt-BR")}`
+          ? `Vitoria: +${formatBRL(avaliacao.premioTotal)}`
           : "Sem prêmio";
 
       setHistorico((anterior) => [
@@ -173,7 +172,7 @@ export default function FortunaNeonPage() {
 
       setMensagem(
         avaliacao.premioTotal > 0
-          ? `Você ganhou ${avaliacao.premioTotal.toLocaleString("pt-BR")} moedas.`
+          ? `Voce ganhou ${formatBRL(avaliacao.premioTotal)}.`
           : "Nenhuma combinação vencedora desta vez."
       );
 

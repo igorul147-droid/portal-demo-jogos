@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import Footer from "@/components/Footer";
+import { formatBRL } from "@/lib/currency";
 
 const NAIPES = ["♠", "♥", "♦", "♣"];
 const VALORES = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
@@ -125,7 +126,7 @@ export default function HiLoPage() {
           <div className="text-right">
             <p className="text-sm text-white/60">Saldo</p>
             <p className="text-lg font-bold text-amber-400">
-              {saldo.toLocaleString("pt-BR")} moedas
+              {formatBRL(saldo)}
             </p>
           </div>
         </div>
@@ -140,7 +141,7 @@ export default function HiLoPage() {
               : "bg-red-500/20 border border-red-400/40 text-red-300"
           }`}>
             {resultado === "win"
-              ? `🎉 Você sacou ${lucroAcumulado.toLocaleString()} moedas! (${multiplicador}x)`
+              ? `🎉 Você sacou ${formatBRL(lucroAcumulado)}! (${multiplicador}x)`
               : "❌ Errou! Você perdeu esta rodada."}
           </div>
         )}
@@ -179,7 +180,7 @@ export default function HiLoPage() {
                 </div>
                 <div className="bg-white/5 rounded-xl p-3">
                   <p className="text-xs text-white/50">Ganho</p>
-                  <p className="text-xl font-bold text-blue-300">{lucroAcumulado.toLocaleString()}</p>
+                  <p className="text-xl font-bold text-blue-300">{formatBRL(lucroAcumulado)}</p>
                 </div>
               </div>
             </div>
@@ -238,7 +239,7 @@ export default function HiLoPage() {
               disabled={acertos === 0}
               className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-500 py-3 font-bold text-white transition disabled:opacity-50"
             >
-              💰 Sacar ({lucroAcumulado.toLocaleString()} moedas)
+              💰 Sacar ({formatBRL(lucroAcumulado)})
             </button>
           </div>
         )}

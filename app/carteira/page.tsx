@@ -6,9 +6,10 @@ import Footer from "@/components/Footer";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import { CreditCard, Zap, TrendingUp, AlertCircle, Lock, Copy, Check } from "lucide-react";
 import exactaPay from "@/lib/exacta-pay";
+import { formatBRL } from "@/lib/currency";
 
 function formatarMoedas(valor: number) {
-  return `${valor.toLocaleString("pt-BR")} moedas`;
+  return formatBRL(valor);
 }
 
 function formatarReal(valor: number) {

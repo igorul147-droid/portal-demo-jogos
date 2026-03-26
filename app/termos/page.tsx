@@ -25,7 +25,7 @@ Ao acessar e usar a plataforma BetClean, você concorda em estar vinculado por e
 
 ## 2. Descrição do Serviço
 
-BetClean é uma plataforma de demonstração de jogos de azar. Este é um simulador educacional destinado exclusivamente para fins de entretenimento. **Nenhum dinheiro real está envolvido.**
+BetClean é uma plataforma digital de jogos e entretenimento com recursos de carteira, autenticação e controles de segurança. O uso da plataforma está sujeito às leis locais e às regras de compliance aplicáveis.
 
 ## 3. Elegibilidade
 
@@ -186,7 +186,7 @@ Você pode definir um limite máximo de depósito diário/semanal/mensal:
 - **Semanal**: até R$ 7.000
 - **Mensal**: até R$ 20.000
 
-*(Nota: Este é um demo, não há dinheiro real)*
+*(Nota: limites operacionais podem variar conforme regras regulatórias e perfil de conta.)*
 
 ### Auto-Exclusão
 Você pode se auto-excluir por:

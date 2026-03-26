@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
+import { formatBRL } from "@/lib/currency";
 
 type LocalSlotPageProps = {
   title: string;
@@ -87,7 +88,7 @@ export default function LocalSlotPage({
       setUltimoPremio(premio);
 
       if (premio > 0) {
-        setMensagem(`Voce ganhou ${premio.toLocaleString("pt-BR")} moedas!`);
+        setMensagem(`Voce ganhou ${formatBRL(premio)}!`);
       } else {
         setMensagem("Sem premio nesta rodada. Tente novamente!");
       }
@@ -113,7 +114,7 @@ export default function LocalSlotPage({
           </div>
           <div className="flex items-center gap-3">
             <p className="text-xs text-amber-300 sm:text-sm">
-              Saldo: {saldo.toLocaleString("pt-BR")} moedas
+              Saldo: {formatBRL(saldo)}
             </p>
             <button
               onClick={toggleFullscreen}
@@ -158,7 +159,7 @@ export default function LocalSlotPage({
                     : "bg-white/10 text-white hover:bg-white/20"
                 }`}
               >
-                {valor.toLocaleString("pt-BR")}
+                {formatBRL(valor)}
               </button>
             ))}
           </div>
@@ -175,7 +176,7 @@ export default function LocalSlotPage({
             </button>
 
             <div className="rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm">
-              Ultimo premio: <strong>{ultimoPremio.toLocaleString("pt-BR")}</strong>
+              Ultimo premio: <strong>{formatBRL(ultimoPremio)}</strong>
             </div>
           </div>
 
