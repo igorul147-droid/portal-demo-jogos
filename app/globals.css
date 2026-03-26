@@ -166,3 +166,42 @@ body {
 .animate-bonus-flare {
   animation: bonus-flare 1s ease-in-out infinite;
 }
+
+@keyframes fortune-particle-rise {
+  0% {
+    transform: translateY(12px) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-180px) scale(1.15);
+    opacity: 0;
+  }
+}
+
+.fortune-particle {
+  position: absolute;
+  bottom: 14px;
+  border-radius: 999px;
+  filter: blur(0.2px);
+  animation-name: fortune-particle-rise;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+.fortune-particle-gold {
+  background: radial-gradient(circle, rgba(253, 224, 71, 1) 0%, rgba(245, 158, 11, 0.2) 72%);
+  box-shadow: 0 0 16px rgba(251, 191, 36, 0.55);
+}
+
+.fortune-particle-emerald {
+  background: radial-gradient(circle, rgba(110, 231, 183, 1) 0%, rgba(16, 185, 129, 0.2) 72%);
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.45);
+}
+
+.fortune-particle-red {
+  background: radial-gradient(circle, rgba(252, 165, 165, 1) 0%, rgba(239, 68, 68, 0.2) 72%);
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.4);
+}

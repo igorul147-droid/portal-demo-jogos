@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import { formatBRL } from "@/lib/currency";
@@ -49,6 +49,15 @@ type SpinResult = {
   contagemBonus: number;
 };
 
+type Particle = {
+  id: number;
+  left: string;
+  delay: string;
+  duration: string;
+  size: number;
+  hue: "gold" | "emerald" | "red";
+};
+
 function randomSymbol() {
   return SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
 }
@@ -86,6 +95,8 @@ function calcularPremio(grade: SymbolType[][], aposta: number, bonusMode: boolea
 export default function FortuneTigerPage() {
   const router = useRouter();
   const { saldo, setSaldo, registrarResultado } = useDemoWallet();
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const particleIdRef = useRef(0);
 
   const [grade, setGrade] = useState<SymbolType[][]>(gerarGrade);
   const [aposta, setAposta] = useState(40);
@@ -98,6 +109,8 @@ export default function FortuneTigerPage() {
   const [rodadas, setRodadas] = useState(0);
   const [totalGanho, setTotalGanho] = useState(0);
   const [maiorMultiplicador, setMaiorMultiplicador] = useState(0);
+  const [audioAtivo, setAudioAtivo] = useState(true);
+  const [particles, setParticles] = useState<Particle[]>([]);
 
   useEffect(() => {
     const email = window.localStorage.getItem("demo-wallet-email");
@@ -111,12 +124,65 @@ export default function FortuneTigerPage() {
     return "Base game ativo";
   }, [emBonus, freeSpins, girando]);
 
+  function getAudioContext() {
+    if (typeof window === "undefined") return null;
+    if (!audioContextRef.current) {
+      const AudioContextClass = window.AudioContext;
+      if (!AudioContextClass) return null;
+      audioContextRef.current = new AudioContextClass();
+    }
+    return audioContextRef.current;
+  }
+
+  function tocarSequencia(frequencias: number[], duracao = 0.08) {
+    if (!audioAtivo) return;
+
+    const contexto = getAudioContext();
+    if (!contexto) return;
+
+    const inicio = contexto.currentTime;
+
+    frequencias.forEach((frequencia, index) => {
+      const oscillator = contexto.createOscillator();
+      const gain = contexto.createGain();
+
+      oscillator.type = index === 0 ? "triangle" : "sine";
+      oscillator.frequency.setValueAtTime(frequencia, inicio + index * duracao * 0.9);
+      gain.gain.setValueAtTime(0.0001, inicio + index * duracao * 0.9);
+      gain.gain.exponentialRampToValueAtTime(0.045, inicio + index * duracao * 0.9 + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, inicio + (index + 1) * duracao);
+
+      oscillator.connect(gain);
+      gain.connect(contexto.destination);
+      oscillator.start(inicio + index * duracao * 0.9);
+      oscillator.stop(inicio + (index + 1) * duracao + 0.03);
+    });
+  }
+
+  function dispararParticulas(tipo: Particle["hue"], quantidade: number) {
+    const novas = Array.from({ length: quantidade }, () => ({
+      id: particleIdRef.current++,
+      left: `${8 + Math.random() * 84}%`,
+      delay: `${Math.random() * 0.25}s`,
+      duration: `${1.1 + Math.random() * 0.9}s`,
+      size: 8 + Math.round(Math.random() * 10),
+      hue: tipo,
+    }));
+
+    setParticles((atual) => [...atual, ...novas]);
+
+    window.setTimeout(() => {
+      setParticles((atual) => atual.filter((item) => !novas.some((novo) => novo.id === item.id)));
+    }, 2200);
+  }
+
   function girar() {
     if (girando || saldo < aposta) return;
 
     setGirando(true);
     setMensagem(emBonus ? "Bonus round em execução..." : "Spin em execução...");
     setLinhasAtivas([]);
+    tocarSequencia([320, 420, 520], 0.05);
 
     const frameTimer = setInterval(() => {
       setGrade(gerarGrade());
@@ -140,10 +206,21 @@ export default function FortuneTigerPage() {
 
       if (avaliacao.bonusTriggered) {
         setFreeSpins((atual) => atual + 5);
+        dispararParticulas("emerald", 18);
+        tocarSequencia([660, 880, 1040, 1320], 0.08);
       }
 
       if (freeSpinsAtuais > 0) {
         setFreeSpins((atual) => Math.max(atual - 1, 0));
+      }
+
+      if (!avaliacao.bonusTriggered && avaliacao.premio > 0) {
+        dispararParticulas("gold", 12);
+        tocarSequencia([440, 660, 880], 0.07);
+      }
+
+      if (avaliacao.premio === 0) {
+        tocarSequencia([180, 160], 0.05);
       }
 
       setMensagem(
@@ -215,7 +292,22 @@ export default function FortuneTigerPage() {
               <span>{bonusAtivo ? "Bonus ON" : "Bonus OFF"}</span>
             </div>
 
-            <div className="grid grid-cols-3 gap-3 rounded-[28px] border border-yellow-200/30 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.16),_transparent_45%),linear-gradient(180deg,#f7df9c_0%,#f3b84e_32%,#6a1d10_100%)] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
+            <div className="relative grid grid-cols-3 gap-3 rounded-[28px] border border-yellow-200/30 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.16),_transparent_45%),linear-gradient(180deg,#f7df9c_0%,#f3b84e_32%,#6a1d10_100%)] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
+              <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[28px]">
+                {particles.map((particle) => (
+                  <span
+                    key={particle.id}
+                    className={`fortune-particle ${particle.hue === "gold" ? "fortune-particle-gold" : particle.hue === "emerald" ? "fortune-particle-emerald" : "fortune-particle-red"}`}
+                    style={{
+                      left: particle.left,
+                      animationDelay: particle.delay,
+                      animationDuration: particle.duration,
+                      width: `${particle.size}px`,
+                      height: `${particle.size}px`,
+                    }}
+                  />
+                ))}
+              </div>
               {grade.map((linha, i) =>
                 linha.map((item, j) => {
                   const meta = symbolMeta[item];
@@ -270,6 +362,16 @@ export default function FortuneTigerPage() {
             </div>
 
             <div className="flex items-center gap-3">
+              <button
+                onClick={() => setAudioAtivo((atual) => !atual)}
+                className={`rounded-2xl border px-4 py-2 text-sm font-semibold transition ${
+                  audioAtivo
+                    ? "border-cyan-400/30 bg-cyan-400/15 text-cyan-200"
+                    : "border-white/10 bg-white/5 text-white/70"
+                }`}
+              >
+                {audioAtivo ? "Áudio ON" : "Áudio OFF"}
+              </button>
               <button
                 onClick={() => setBonusAtivo((atual) => !atual)}
                 disabled={girando || emBonus}

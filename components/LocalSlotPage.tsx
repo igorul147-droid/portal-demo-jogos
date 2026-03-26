@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import { formatBRL } from "@/lib/currency";
@@ -73,8 +73,17 @@ export default function LocalSlotPage({
   const [aposta, setAposta] = useState(100);
   const [girando, setGirando] = useState(false);
   const [reels, setReels] = useState([symbols[0], symbols[1], symbols[2]]);
-  const [mensagem, setMensagem] = useState("Clique em GIRAR para jogar");
+  const [mensagem, setMensagem] = useState("Mesa pronta para nova rodada");
   const [ultimoPremio, setUltimoPremio] = useState(0);
+  const [rodadas, setRodadas] = useState(0);
+  const [totalGanho, setTotalGanho] = useState(0);
+
+  const taxaRetorno = useMemo(() => {
+    if (rodadas === 0) return 0;
+    const totalApostado = rodadas * aposta;
+    if (totalApostado === 0) return 0;
+    return Math.round((totalGanho / totalApostado) * 100);
+  }, [aposta, rodadas, totalGanho]);
 
   function calcularPremio(resultado: string[]) {
     if (resultado[0] === resultado[1] && resultado[1] === resultado[2]) {
@@ -96,7 +105,7 @@ export default function LocalSlotPage({
     }
 
     setGirando(true);
-    setMensagem("Girando...");
+    setMensagem("Spin em processamento...");
 
     setTimeout(() => {
       const novoResultado = [
@@ -111,11 +120,13 @@ export default function LocalSlotPage({
       setSaldo((valorAtual) => valorAtual - aposta + premio);
       registrarResultado(aposta, premio);
       setUltimoPremio(premio);
+      setRodadas((valor) => valor + 1);
+      setTotalGanho((valor) => valor + premio);
 
       if (premio > 0) {
-        setMensagem(`Voce ganhou ${formatBRL(premio)}!`);
+        setMensagem(`Rodada liquidada com ${formatBRL(premio)}.`);
       } else {
-        setMensagem("Sem premio nesta rodada. Tente novamente!");
+        setMensagem("Sem prêmio nesta rodada.");
       }
 
       setGirando(false);
@@ -123,7 +134,7 @@ export default function LocalSlotPage({
   }
 
   return (
-    <div className="h-screen bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.22),transparent_40%),#04070d] text-white">
+    <div className="h-screen bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.22),transparent_24%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.12),transparent_24%),#04070d] text-white">
       <div className="h-16 border-b border-white/10 bg-black/70 backdrop-blur">
         <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4">
           <div className="flex items-center gap-4">
@@ -153,7 +164,7 @@ export default function LocalSlotPage({
       </div>
 
       <div className="flex h-[calc(100vh-4rem)] items-center justify-center p-4">
-        <div className={`w-full max-w-5xl rounded-3xl border border-amber-400/20 p-6 shadow-[0_0_32px_rgba(245,158,11,0.15)] ${themeClass}`}>
+        <div className={`surface-card w-full max-w-6xl rounded-[32px] border border-amber-400/20 p-6 shadow-[0_30px_80px_rgba(0,0,0,0.35)] ${themeClass}`}>
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-3xl font-bold">{title}</h2>
@@ -162,17 +173,45 @@ export default function LocalSlotPage({
             <div className="flex gap-2 text-xs">
               <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-emerald-300">RTP 96.40%</span>
               <span className="rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-amber-300">Volatilidade Alta</span>
+              <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-cyan-300">Session BRL</span>
             </div>
           </div>
 
-          <div className="mb-6 rounded-2xl border border-white/10 bg-black/45 p-6">
+          <div className="mb-6 grid gap-3 sm:grid-cols-4">
+            <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-white/45">Carteira</p>
+              <p className="mt-2 text-lg font-bold text-emerald-300">{formatBRL(saldo)}</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-white/45">Aposta</p>
+              <p className="mt-2 text-lg font-bold text-white">{formatBRL(aposta)}</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-white/45">Último ganho</p>
+              <p className="mt-2 text-lg font-bold text-amber-200">{formatBRL(ultimoPremio)}</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-white/45">RTP sessão</p>
+              <p className="mt-2 text-lg font-bold text-cyan-200">{taxaRetorno}%</p>
+            </div>
+          </div>
+
+          <div className="mb-6 rounded-[28px] border border-white/10 bg-black/45 p-6">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/25 px-4 py-3 text-sm text-white/60">
+              <span>3 reel engine</span>
+              <span>Pagamentos instantâneos</span>
+              <span>Motor interno premium</span>
+            </div>
             <div className="grid grid-cols-3 gap-4">
               {reels.map((symbol, idx) => (
                 <div
                   key={idx}
-                  className="flex h-32 items-center justify-center rounded-2xl border border-amber-300/20 bg-gradient-to-b from-white/10 to-white/5 text-2xl font-black tracking-[0.2em] text-amber-100"
+                  className={`flex h-36 items-center justify-center rounded-[24px] border border-amber-300/20 bg-gradient-to-b from-white/10 to-white/5 text-2xl font-black tracking-[0.2em] text-amber-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] ${girando ? "animate-reel-flicker" : ""}`}
                 >
-                  {symbolLabel(symbol)}
+                  <div className="text-center">
+                    <div className="text-4xl tracking-normal">{symbol}</div>
+                    <div className="mt-3 text-lg tracking-[0.28em]">{symbolLabel(symbol)}</div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -195,9 +234,9 @@ export default function LocalSlotPage({
             ))}
           </div>
 
-          <div className="mb-5 text-center text-sm text-white/80">{mensagem}</div>
+          <div className="mb-5 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-center text-sm text-white/80">{mensagem}</div>
 
-          <div className="flex items-center justify-center gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-3">
             <button
               onClick={girar}
               disabled={girando || saldo < aposta}
@@ -209,10 +248,14 @@ export default function LocalSlotPage({
             <div className="rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm">
               Ultimo premio: <strong>{formatBRL(ultimoPremio)}</strong>
             </div>
+
+            <div className="rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm">
+              Rodadas: <strong>{rodadas}</strong>
+            </div>
           </div>
 
           <div className="mt-6 rounded-xl border border-white/10 bg-black/30 p-3 text-center text-xs text-white/70">
-            Session ID local ativa • Motor RNG interno • Controles de aposta responsaveis
+            Session ID local ativa • Motor RNG interno • Controles de aposta responsáveis
           </div>
         </div>
       </div>
