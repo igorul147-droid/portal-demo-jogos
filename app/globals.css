@@ -205,3 +205,20 @@ body {
   background: radial-gradient(circle, rgba(252, 165, 165, 1) 0%, rgba(239, 68, 68, 0.2) 72%);
   box-shadow: 0 0 16px rgba(239, 68, 68, 0.4);
 }
+
+.catalog-card-shine::before {
+  content: "";
+  position: absolute;
+  inset: -120% auto auto -40%;
+  width: 60%;
+  height: 220%;
+  transform: rotate(18deg);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  opacity: 0;
+  transition: transform 0.7s ease, opacity 0.4s ease;
+}
+
+.catalog-card-shine:hover::before {
+  opacity: 1;
+  transform: translateX(220%) rotate(18deg);
+}
