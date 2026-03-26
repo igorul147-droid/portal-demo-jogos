@@ -6,14 +6,14 @@ import { useDemoWallet } from "@/components/DemoWalletProvider";
 import Footer from "@/components/Footer";
 import { formatBRL } from "@/lib/currency";
 
-const demoUrl =
+const fallbackUrl =
   "https://demogamesfree.pragmaticplay.net/gs2c/openGame.do?lang=pt&cur=BRL&gameSymbol=vs20fruitsw&websiteUrl=https%3A%2F%2Fdemogamesfree.pragmaticplay.net&jurisdiction=99";
 
 export default function SweetBonanzaPage() {
   const router = useRouter();
   const { saldo } = useDemoWallet();
   const [carregando, setCarregando] = useState(true);
-  const [gameUrl, setGameUrl] = useState(demoUrl);
+  const [gameUrl, setGameUrl] = useState(fallbackUrl);
   const [integrado, setIntegrado] = useState(false);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function SweetBonanzaPage() {
 
         setIntegrado(Boolean(payload.integrated));
       } catch {
-        setGameUrl(demoUrl);
+        setGameUrl(fallbackUrl);
         setIntegrado(false);
       }
     }
@@ -103,14 +103,14 @@ export default function SweetBonanzaPage() {
             <span className="bg-purple-500/20 text-purple-300 px-3 py-1 rounded-full">Max Win x21.100</span>
             <span className="bg-pink-500/20 text-pink-300 px-3 py-1 rounded-full">Sessão BRL</span>
             <span className={`px-3 py-1 rounded-full ${integrado ? "bg-emerald-500/20 text-emerald-300" : "bg-cyan-500/20 text-cyan-300"}`}>
-              {integrado ? "Wallet integrada" : "Modo demo do provedor"}
+              {integrado ? "Wallet integrada" : "Sessão externa do provedor"}
             </span>
           </div>
 
           {!integrado && (
             <div className="mb-4 rounded-xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-3 text-sm text-cyan-100">
               Saldo exibido no topo refere-se a carteira da plataforma. O valor
-              interno do iframe do provedor pode seguir uma carteira separada.
+              interno do jogo pode seguir carteira externa do provedor.
             </div>
           )}
 
