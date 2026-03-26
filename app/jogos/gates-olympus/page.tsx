@@ -5,17 +5,53 @@ import { useRouter } from "next/navigation";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import Footer from "@/components/Footer";
 import { formatBRL } from "@/lib/currency";
-const gameUrl =
+const demoUrl =
   "https://demogamesfree.pragmaticplay.net/gs2c/openGame.do?lang=pt&cur=BRL&gameSymbol=vs20olympgate&websiteUrl=https%3A%2F%2Fdemogamesfree.pragmaticplay.net&jurisdiction=99";
 
 export default function GatesOlympusPage() {
   const router = useRouter();
   const { saldo } = useDemoWallet();
   const [carregando, setCarregando] = useState(true);
+  const [gameUrl, setGameUrl] = useState(demoUrl);
+  const [integrado, setIntegrado] = useState(false);
 
   useEffect(() => {
     const email = window.localStorage.getItem("demo-wallet-email");
     if (!email) router.push("/login");
+
+    async function carregarLaunchUrl() {
+      try {
+        const resposta = await fetch("/api/provider/launch", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            gameSymbol: "vs20olympgate",
+            playerId: email ?? "guest",
+            balance: saldo,
+            currency: "BRL",
+            locale: "pt-BR",
+          }),
+        });
+
+        if (!resposta.ok) return;
+
+        const payload = (await resposta.json()) as {
+          launchUrl?: string;
+          integrated?: boolean;
+        };
+
+        if (payload.launchUrl) {
+          setGameUrl(payload.launchUrl);
+        }
+
+        setIntegrado(Boolean(payload.integrated));
+      } catch {
+        setGameUrl(demoUrl);
+        setIntegrado(false);
+      }
+    }
+
+    carregarLaunchUrl();
   }, [router]);
 
   return (
@@ -66,7 +102,17 @@ export default function GatesOlympusPage() {
             <span className="bg-yellow-500/20 text-yellow-300 px-3 py-1 rounded-full">Volatilidade alta</span>
             <span className="bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full">Max Win x5.000</span>
             <span className="bg-sky-500/20 text-sky-300 px-3 py-1 rounded-full">Sessão BRL</span>
+            <span className={`px-3 py-1 rounded-full ${integrado ? "bg-emerald-500/20 text-emerald-300" : "bg-cyan-500/20 text-cyan-300"}`}>
+              {integrado ? "Wallet integrada" : "Modo demo do provedor"}
+            </span>
           </div>
+
+          {!integrado && (
+            <div className="mb-4 rounded-xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-3 text-sm text-cyan-100">
+              Saldo exibido no topo refere-se a carteira da plataforma. O valor
+              interno do iframe do provedor pode seguir uma carteira separada.
+            </div>
+          )}
 
           <div className="relative aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black">
             {carregando && (

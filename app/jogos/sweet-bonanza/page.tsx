@@ -6,17 +6,53 @@ import { useDemoWallet } from "@/components/DemoWalletProvider";
 import Footer from "@/components/Footer";
 import { formatBRL } from "@/lib/currency";
 
-const gameUrl =
+const demoUrl =
   "https://demogamesfree.pragmaticplay.net/gs2c/openGame.do?lang=pt&cur=BRL&gameSymbol=vs20fruitsw&websiteUrl=https%3A%2F%2Fdemogamesfree.pragmaticplay.net&jurisdiction=99";
 
 export default function SweetBonanzaPage() {
   const router = useRouter();
   const { saldo } = useDemoWallet();
   const [carregando, setCarregando] = useState(true);
+  const [gameUrl, setGameUrl] = useState(demoUrl);
+  const [integrado, setIntegrado] = useState(false);
 
   useEffect(() => {
     const email = window.localStorage.getItem("demo-wallet-email");
     if (!email) router.push("/login");
+
+    async function carregarLaunchUrl() {
+      try {
+        const resposta = await fetch("/api/provider/launch", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            gameSymbol: "vs20fruitsw",
+            playerId: email ?? "guest",
+            balance: saldo,
+            currency: "BRL",
+            locale: "pt-BR",
+          }),
+        });
+
+        if (!resposta.ok) return;
+
+        const payload = (await resposta.json()) as {
+          launchUrl?: string;
+          integrated?: boolean;
+        };
+
+        if (payload.launchUrl) {
+          setGameUrl(payload.launchUrl);
+        }
+
+        setIntegrado(Boolean(payload.integrated));
+      } catch {
+        setGameUrl(demoUrl);
+        setIntegrado(false);
+      }
+    }
+
+    carregarLaunchUrl();
   }, [router]);
 
   return (
@@ -35,7 +71,7 @@ export default function SweetBonanzaPage() {
             </div>
             <div className="flex items-center gap-4">
               <div className="text-right hidden sm:block">
-                <p className="text-sm text-white/60">Saldo disponível</p>
+                <p className="text-sm text-white/60">Carteira BetClean</p>
                 <p className="text-lg font-bold text-amber-400">
                   {formatBRL(saldo)}
                 </p>
@@ -66,7 +102,17 @@ export default function SweetBonanzaPage() {
             <span className="bg-yellow-500/20 text-yellow-300 px-3 py-1 rounded-full">Volatilidade alta</span>
             <span className="bg-purple-500/20 text-purple-300 px-3 py-1 rounded-full">Max Win x21.100</span>
             <span className="bg-pink-500/20 text-pink-300 px-3 py-1 rounded-full">Sessão BRL</span>
+            <span className={`px-3 py-1 rounded-full ${integrado ? "bg-emerald-500/20 text-emerald-300" : "bg-cyan-500/20 text-cyan-300"}`}>
+              {integrado ? "Wallet integrada" : "Modo demo do provedor"}
+            </span>
           </div>
+
+          {!integrado && (
+            <div className="mb-4 rounded-xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-3 text-sm text-cyan-100">
+              Saldo exibido no topo refere-se a carteira da plataforma. O valor
+              interno do iframe do provedor pode seguir uma carteira separada.
+            </div>
+          )}
 
           <div className="relative aspect-video bg-black rounded-2xl overflow-hidden mb-4 border border-white/10">
             {carregando && (
