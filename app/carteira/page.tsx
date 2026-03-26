@@ -33,7 +33,7 @@ function gerarQRCodeASCII() {
 }
 
 export default function CarteiraPage() {
-  const { saldo, saldoReal, setSaldoReal, sacar } = useDemoWallet();
+  const { saldo, setSaldo, saldoReal, setSaldoReal, sacar } = useDemoWallet();
 
   const [activeTab, setActiveTab] = useState<"depositar" | "sacar">("depositar");
   const [valorDeposito, setValorDeposito] = useState("");
@@ -160,6 +160,7 @@ export default function CarteiraPage() {
               const status = await exactaPay.getTransactionStatus(transacao.id, 'pix');
               if (status.status === 'paid') {
                 setSaldoReal((prev) => prev + valor);
+                setSaldo((prev) => prev + valor);
                 setTransacaoPix({ ...transacao, status: "paid" });
                 setMessageDeposito(`✅ Depósito de ${formatarReal(valor)} confirmado!`);
                 setValorDeposito("");
@@ -184,6 +185,7 @@ export default function CarteiraPage() {
               const status = await exactaPay.getTransactionStatus(transacao.id, 'crypto');
               if (status.status === 'received') {
                 setSaldoReal((prev) => prev + valor);
+                setSaldo((prev) => prev + valor);
                 setTransacaoCripto({ ...transacao, status: "received" });
                 setMessageDeposito(`✅ Depósito de ${formatarReal(valor)} confirmado na blockchain!`);
                 setValorDeposito("");
@@ -231,8 +233,15 @@ export default function CarteiraPage() {
     // Simula processamento de saque
     setTimeout(() => {
       try {
-        setSaldoReal((prev) => prev - valor);
-        sacar(valor);
+        const saqueConfirmado = sacar(valor);
+
+        if (!saqueConfirmado) {
+          setMessageSaque("❌ Saldo insuficiente para concluir o saque.");
+          setCarregandoSaque(false);
+          return;
+        }
+
+        setSaldo((prev) => prev - valor);
         setMessageSaque(`✅ Saque de ${formatarReal(valor)} solicitado! Você receberá em até 2 dias úteis.`);
         setValorSaque("");
         setCarregandoSaque(false);

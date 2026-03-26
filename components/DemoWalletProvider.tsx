@@ -28,7 +28,7 @@ type DemoWalletContextType = {
   registrarResultado: (aposta: number, premio: number) => void;
   resetarTudoGlobal: () => void;
   depositar: (valor: number, metodo: string) => void;
-  sacar: (valor: number) => void;
+  sacar: (valor: number) => boolean;
 };
 
 const SALDO_INICIAL = 10000;

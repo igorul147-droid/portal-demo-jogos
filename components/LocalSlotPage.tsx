@@ -18,6 +18,31 @@ function randomSymbol(symbols: string[]) {
   return symbols[index];
 }
 
+function symbolLabel(symbol: string) {
+  const map: Record<string, string> = {
+    "🐯": "WILD",
+    "🪙": "COIN",
+    "🍀": "LUCK",
+    "💎": "GEM",
+    "🔥": "FIRE",
+    "⭐": "STAR",
+    "🀄": "MAHJ",
+    "🎍": "BAMB",
+    "🏮": "LAMP",
+    "💠": "RUNE",
+    "🐉": "DRGN",
+    "🤠": "COWB",
+    "💰": "GOLD",
+    "🔫": "SHOT",
+    "🐎": "HORSE",
+    "🥚": "EGG",
+    "⚔️": "BLADE",
+    "👑": "KING",
+  };
+
+  return map[symbol] ?? symbol.toUpperCase().slice(0, 5);
+}
+
 export default function LocalSlotPage({
   title,
   subtitle,
@@ -98,7 +123,7 @@ export default function LocalSlotPage({
   }
 
   return (
-    <div className="h-screen bg-black text-white">
+    <div className="h-screen bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.22),transparent_40%),#04070d] text-white">
       <div className="h-16 border-b border-white/10 bg-black/70 backdrop-blur">
         <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4">
           <div className="flex items-center gap-4">
@@ -128,20 +153,26 @@ export default function LocalSlotPage({
       </div>
 
       <div className="flex h-[calc(100vh-4rem)] items-center justify-center p-4">
-        <div className={`w-full max-w-4xl rounded-3xl border border-white/10 p-6 ${themeClass}`}>
-          <div className="mb-6 text-center">
-            <h2 className="text-3xl font-bold">{title}</h2>
-            <p className="mt-2 text-white/70">{subtitle}</p>
+        <div className={`w-full max-w-5xl rounded-3xl border border-amber-400/20 p-6 shadow-[0_0_32px_rgba(245,158,11,0.15)] ${themeClass}`}>
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="text-3xl font-bold">{title}</h2>
+              <p className="mt-1 text-sm text-white/70">{subtitle}</p>
+            </div>
+            <div className="flex gap-2 text-xs">
+              <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-emerald-300">RTP 96.40%</span>
+              <span className="rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-amber-300">Volatilidade Alta</span>
+            </div>
           </div>
 
-          <div className="mb-6 rounded-2xl bg-black/40 p-6">
+          <div className="mb-6 rounded-2xl border border-white/10 bg-black/45 p-6">
             <div className="grid grid-cols-3 gap-4">
               {reels.map((symbol, idx) => (
                 <div
                   key={idx}
-                  className="flex h-28 items-center justify-center rounded-2xl border border-white/15 bg-white/10 text-5xl"
+                  className="flex h-32 items-center justify-center rounded-2xl border border-amber-300/20 bg-gradient-to-b from-white/10 to-white/5 text-2xl font-black tracking-[0.2em] text-amber-100"
                 >
-                  {symbol}
+                  {symbolLabel(symbol)}
                 </div>
               ))}
             </div>
@@ -170,9 +201,9 @@ export default function LocalSlotPage({
             <button
               onClick={girar}
               disabled={girando || saldo < aposta}
-              className="rounded-2xl bg-gradient-to-r from-amber-400 to-orange-500 px-8 py-3 font-bold text-black transition hover:scale-[1.02] disabled:opacity-50"
+              className="rounded-2xl bg-gradient-to-r from-amber-300 to-yellow-500 px-9 py-3 font-black uppercase tracking-wide text-black transition hover:scale-[1.02] disabled:opacity-50"
             >
-              {girando ? "Girando..." : "GIRAR"}
+              {girando ? "Spinning..." : "Spin"}
             </button>
 
             <div className="rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-sm">
@@ -180,8 +211,8 @@ export default function LocalSlotPage({
             </div>
           </div>
 
-          <div className="mt-6 rounded-xl border border-blue-500/25 bg-blue-500/10 p-3 text-center text-xs text-white/75">
-            Modo local BetClean: jogo estavel, sem erro de provider externo.
+          <div className="mt-6 rounded-xl border border-white/10 bg-black/30 p-3 text-center text-xs text-white/70">
+            Session ID local ativa • Motor RNG interno • Controles de aposta responsaveis
           </div>
         </div>
       </div>

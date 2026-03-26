@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
+import { formatBRL } from "@/lib/currency";
 
 const SYMBOLS = ["🐯", "🪙", "🧨", "🧧", "💠"];
 
@@ -61,7 +62,7 @@ export default function FortuneTigerPage() {
       setSaldo((atual) => atual - aposta + premio);
       registrarResultado(aposta, premio);
       setUltimoPremio(premio);
-      setMensagem(premio > 0 ? `Voce ganhou R$ ${(premio / 100).toFixed(2)}` : "Sem premio nesta rodada");
+      setMensagem(premio > 0 ? `Voce ganhou ${formatBRL(premio)}` : "Sem premio nesta rodada");
       setGirando(false);
     }, 1300);
   }
@@ -84,7 +85,7 @@ export default function FortuneTigerPage() {
           <div className="rounded-[28px] border-4 border-yellow-500/70 bg-gradient-to-b from-red-700 to-red-900 p-3 shadow-[0_0_30px_rgba(234,179,8,0.2)]">
             <div className="mb-3 rounded-2xl border border-yellow-300/30 bg-black/30 p-2 text-center">
               <p className="text-xs uppercase tracking-wider text-yellow-200/80">Saldo</p>
-              <p className="text-lg font-bold text-emerald-300">R$ {(saldo / 100).toFixed(2)}</p>
+              <p className="text-lg font-bold text-emerald-300">{formatBRL(saldo)}</p>
             </div>
 
             <div className="grid grid-cols-3 gap-2 rounded-2xl border border-yellow-300/35 bg-amber-50 p-2 text-5xl text-black">
@@ -110,11 +111,11 @@ export default function FortuneTigerPage() {
           <div className="mb-3 grid grid-cols-3 gap-2 text-center text-sm">
             <div className="rounded-xl bg-black/30 p-2">
               <p className="text-yellow-100/75">Ultimo ganho</p>
-              <p className="font-semibold text-emerald-300">R$ {(ultimoPremio / 100).toFixed(2)}</p>
+              <p className="font-semibold text-emerald-300">{formatBRL(ultimoPremio)}</p>
             </div>
             <div className="rounded-xl bg-black/30 p-2">
               <p className="text-yellow-100/75">Aposta</p>
-              <p className="font-semibold">R$ {(aposta / 100).toFixed(2)}</p>
+              <p className="font-semibold">{formatBRL(aposta)}</p>
             </div>
             <div className="rounded-xl bg-black/30 p-2">
               <p className="text-yellow-100/75">Status</p>
@@ -132,7 +133,7 @@ export default function FortuneTigerPage() {
                   aposta === valor ? "bg-yellow-400 text-black" : "bg-black/30 text-white"
                 }`}
               >
-                R$ {(valor / 100).toFixed(2)}
+                {formatBRL(valor)}
               </button>
             ))}
           </div>
