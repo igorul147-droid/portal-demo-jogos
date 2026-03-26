@@ -21,6 +21,7 @@ export default function LoginPage() {
   const [mostrarRecuperacao, setMostrarRecuperacao] = useState(false);
   const [emailRecuperacao, setEmailRecuperacao] = useState("");
   const [mensagemRecuperacao, setMensagemRecuperacao] = useState("");
+  const [enviandoRecuperacao, setEnviandoRecuperacao] = useState(false);
 
   function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -76,11 +77,45 @@ export default function LoginPage() {
       return;
     }
 
-    registrarEmailRecuperacao(emailNormalizado);
-    setMensagemRecuperacao(
-      "Enviamos um email padrao de recuperacao. Verifique sua caixa de entrada e spam."
-    );
-    setEmailRecuperacao("");
+    setEnviandoRecuperacao(true);
+
+    fetch("/api/auth/recovery/request", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: emailNormalizado }),
+    })
+      .then(async (response) => {
+        const data = (await response.json()) as {
+          ok: boolean;
+          sent?: boolean;
+          provider?: "resend" | "mock";
+          message?: string;
+        };
+
+        if (!response.ok || !data.ok) {
+          throw new Error(data.message ?? "Falha ao solicitar recuperacao");
+        }
+
+        registrarEmailRecuperacao(emailNormalizado);
+        setMensagemRecuperacao(
+          data.provider === "resend"
+            ? "Email de recuperacao enviado com sucesso. Verifique sua caixa de entrada e spam."
+            : "Recuperacao registrada em modo mock. Configure RESEND_API_KEY para envio real."
+        );
+        setEmailRecuperacao("");
+      })
+      .catch((error: unknown) => {
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Nao foi possivel enviar o email de recuperacao";
+        setErro(message);
+      })
+      .finally(() => {
+        setEnviandoRecuperacao(false);
+      });
   }
 
   return (
@@ -173,9 +208,10 @@ export default function LoginPage() {
                 />
                 <button
                   type="submit"
+                  disabled={enviandoRecuperacao}
                   className="w-full rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-3 font-semibold text-white transition hover:scale-[1.02]"
                 >
-                  Enviar email de recuperacao
+                  {enviandoRecuperacao ? "Enviando..." : "Enviar email de recuperacao"}
                 </button>
               </form>
 
