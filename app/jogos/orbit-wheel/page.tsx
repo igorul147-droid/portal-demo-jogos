@@ -30,8 +30,7 @@ function sortearResultado() {
 }
 
 export default function OrbitWheelPage() {
-  const { saldo, setSaldo, resetarTudoGlobal, registrarResultado } =
-    useDemoWallet();
+  const { saldo, setSaldo, registrarResultado } = useDemoWallet();
 
   const router = useRouter();
   useEffect(() => {
@@ -43,7 +42,7 @@ export default function OrbitWheelPage() {
   const [girando, setGirando] = useState(false);
   const [resultadoAtual, setResultadoAtual] = useState(opcoes[0]);
   const [ultimoPremio, setUltimoPremio] = useState(0);
-  const [mensagem, setMensagem] = useState("Pronto para girar a roleta.");
+  const [mensagem, setMensagem] = useState("Mesa pronta para nova rodada.");
   const [historico, setHistorico] = useState<
     { cor: string; premio: number; aposta: number; multiplicador: number }[]
   >([]);
@@ -68,12 +67,11 @@ export default function OrbitWheelPage() {
   }
 
   function resetarSessao() {
-    resetarTudoGlobal();
     setAposta(100);
     setGirando(false);
     setResultadoAtual(opcoes[0]);
     setUltimoPremio(0);
-    setMensagem("Sessão reiniciada.");
+    setMensagem("Painel operacional limpo.");
     setHistorico([]);
     setGiros(0);
     setTotalApostado(0);
@@ -85,7 +83,7 @@ export default function OrbitWheelPage() {
     if (girando || saldo < aposta) return;
 
     setGirando(true);
-    setMensagem("Roleta girando...");
+    setMensagem("Sequencia orbital em processamento...");
     setUltimoPremio(0);
 
     window.setTimeout(() => {
@@ -111,7 +109,7 @@ export default function OrbitWheelPage() {
       setTotalGanho((valor) => valor + premio);
       setMaiorPremio((valor) => Math.max(valor, premio));
       setMensagem(
-        `Resultado ${resultado.label} (${resultado.multiplicador}x): +${formatarMoedas(
+        `Faixa ${resultado.label} liquidada em ${resultado.multiplicador}x com crédito de ${formatarMoedas(
           premio
         )}.`
       );
@@ -120,7 +118,7 @@ export default function OrbitWheelPage() {
   }
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-white">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top_right,_rgba(52,211,153,0.14),_transparent_25%),radial-gradient(circle_at_bottom_left,_rgba(245,158,11,0.14),_transparent_25%),#08080c] text-white">
       <PortalHeader />
 
       <div className="mx-auto max-w-7xl px-6 py-10">
@@ -136,26 +134,26 @@ export default function OrbitWheelPage() {
             <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-sm font-medium text-emerald-300">
               Saldo: {formatarMoedas(saldo)}
             </div>
-
-            <button
-              onClick={resetarSessao}
-              className="rounded-2xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
-            >
-              Resetar tudo
-            </button>
+            <div className="rounded-2xl border border-amber-400/20 bg-amber-400/10 px-4 py-2 text-sm font-medium text-amber-200">
+              Mesa multi-faixa
+            </div>
+            <div className="rounded-2xl border border-sky-400/20 bg-sky-400/10 px-4 py-2 text-sm font-medium text-sky-200">
+              Multiplicador progressivo
+            </div>
           </div>
         </div>
 
         <section className="grid gap-6 xl:grid-cols-[1.45fr_0.55fr]">
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_30px_80px_rgba(0,0,0,0.35)] backdrop-blur-sm">
             <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               <div>
-                <p className="text-sm text-emerald-300">Roleta</p>
+                <p className="text-sm text-emerald-300">BetClean Originals • Live Wheel</p>
                 <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
                   Orbit Wheel
                 </h1>
                 <p className="mt-3 max-w-2xl text-sm text-white/65 sm:text-base">
-                  Roleta autoral com prêmios instantâneos por cor e multiplicador.
+                  Mesa de roleta proprietária com liquidação imediata por faixa,
+                  leitura clara de payout e histórico financeiro da sessão.
                 </p>
               </div>
 
@@ -174,18 +172,25 @@ export default function OrbitWheelPage() {
               </div>
             </div>
 
-            <div className="rounded-[28px] border border-white/10 bg-black/40 p-6">
+            <div className="rounded-[28px] border border-white/10 bg-gradient-to-br from-emerald-500/10 via-black/50 to-amber-500/10 p-6">
+              <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/25 px-4 py-3 text-sm text-white/65">
+                <span>5 faixas de retorno</span>
+                <span>Liquidação instantânea</span>
+                <span>Exposição fixa por rodada</span>
+              </div>
               <div className="rounded-3xl border border-white/10 bg-black/30 p-8 text-center">
                 <p className="text-sm uppercase tracking-[0.25em] text-white/45">
                   Resultado atual
                 </p>
 
-                <div
-                  className={`mx-auto mt-6 flex h-44 w-44 items-center justify-center rounded-full border border-white/10 text-2xl font-bold ${resultadoAtual.cor} ${
-                    girando ? "animate-pulse" : ""
-                  }`}
-                >
-                  {resultadoAtual.label}
+                <div className="mx-auto mt-6 flex h-56 w-56 items-center justify-center rounded-full border border-white/10 bg-[radial-gradient(circle,_rgba(255,255,255,0.1),_transparent_60%)]">
+                  <div
+                    className={`flex h-40 w-40 items-center justify-center rounded-full border border-white/10 text-2xl font-bold shadow-[0_0_40px_rgba(255,255,255,0.08)] ${resultadoAtual.cor} ${
+                      girando ? "animate-pulse" : ""
+                    }`}
+                  >
+                    {resultadoAtual.label}
+                  </div>
                 </div>
 
                 <p className="mt-5 text-lg font-semibold">
@@ -198,9 +203,9 @@ export default function OrbitWheelPage() {
                   <button
                     onClick={girar}
                     disabled={girando || saldo < aposta}
-                    className="rounded-2xl bg-white px-6 py-3 font-semibold text-black transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50"
+                    className="rounded-2xl bg-gradient-to-r from-emerald-300 via-white to-amber-300 px-6 py-3 font-semibold text-black transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    {girando ? "Girando..." : "Girar roleta"}
+                    {girando ? "Processando" : "Iniciar rodada"}
                   </button>
 
                   <button
@@ -225,7 +230,7 @@ export default function OrbitWheelPage() {
                 </div>
 
                 <div className="text-sm text-white/55">
-                  Prêmios instantâneos por multiplicador
+                  Faixas liquidadas por multiplicador
                 </div>
               </div>
             </div>
@@ -233,8 +238,19 @@ export default function OrbitWheelPage() {
 
           <aside className="space-y-6">
             <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
-              <p className="text-sm text-white/50">Tabela da roleta</p>
-              <h2 className="mt-2 text-2xl font-semibold">Cores e ganhos</h2>
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm text-white/50">Tabela da roleta</p>
+                  <h2 className="mt-2 text-2xl font-semibold">Faixas e ganhos</h2>
+                </div>
+                <button
+                  onClick={resetarSessao}
+                  disabled={girando}
+                  className="rounded-2xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10 disabled:opacity-50"
+                >
+                  Nova sessão
+                </button>
+              </div>
 
               <div className="mt-6 space-y-3">
                 {opcoes.map((opcao) => (

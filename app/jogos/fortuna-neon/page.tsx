@@ -72,8 +72,7 @@ function formatarMoedas(valor: number) {
 
 export default function FortunaNeonPage() {
   const router = useRouter();
-  const { saldo, setSaldo, resetarTudoGlobal, registrarResultado } =
-    useDemoWallet();
+  const { saldo, setSaldo, registrarResultado } = useDemoWallet();
 
   useEffect(() => {
     const email = window.localStorage.getItem("demo-wallet-email");
@@ -84,7 +83,7 @@ export default function FortunaNeonPage() {
   const [aposta, setAposta] = useState(100);
   const [girando, setGirando] = useState(false);
   const [ultimoPremio, setUltimoPremio] = useState(0);
-  const [mensagem, setMensagem] = useState("Pronto para girar.");
+  const [mensagem, setMensagem] = useState("Mesa pronta para nova rodada.");
   const [linhasAtivas, setLinhasAtivas] = useState<number[]>([]);
   const [detalhesPremio, setDetalhesPremio] = useState<string[]>([]);
   const [historico, setHistorico] = useState<
@@ -117,7 +116,7 @@ export default function FortunaNeonPage() {
   function resetarSessaoVisual() {
     setAposta(100);
     setUltimoPremio(0);
-    setMensagem("Sessão reiniciada.");
+    setMensagem("Painel operacional limpo.");
     setLinhasAtivas([]);
     setDetalhesPremio([]);
     setHistorico([]);
@@ -129,16 +128,11 @@ export default function FortunaNeonPage() {
     setGirando(false);
   }
 
-  function resetarTudo() {
-    resetarTudoGlobal();
-    resetarSessaoVisual();
-  }
-
   function girar() {
     if (girando || saldo < aposta) return;
 
     setGirando(true);
-    setMensagem("Girando...");
+    setMensagem("Sequencia de spin em processamento...");
     setLinhasAtivas([]);
     setDetalhesPremio([]);
     setUltimoPremio(0);
@@ -172,8 +166,8 @@ export default function FortunaNeonPage() {
 
       setMensagem(
         avaliacao.premioTotal > 0
-          ? `Voce ganhou ${formatBRL(avaliacao.premioTotal)}.`
-          : "Nenhuma combinação vencedora desta vez."
+          ? `Rodada liquidada com credito de ${formatBRL(avaliacao.premioTotal)}.`
+          : "Nenhuma linha premiada nesta rodada."
       );
 
       setGirando(false);
@@ -197,7 +191,7 @@ export default function FortunaNeonPage() {
   }
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-white">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(217,70,239,0.18),_transparent_30%),radial-gradient(circle_at_bottom_right,_rgba(34,211,238,0.14),_transparent_28%),#0a0a0f] text-white">
       <PortalHeader />
 
       <div className="mx-auto max-w-7xl px-6 py-10">
@@ -213,27 +207,26 @@ export default function FortunaNeonPage() {
             <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-sm font-medium text-emerald-300">
               Saldo: {formatarMoedas(saldo)}
             </div>
-
-            <button
-              onClick={resetarTudo}
-              className="rounded-2xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
-            >
-              Resetar tudo
-            </button>
+            <div className="rounded-2xl border border-fuchsia-400/20 bg-fuchsia-400/10 px-4 py-2 text-sm font-medium text-fuchsia-200">
+              Volatilidade alta
+            </div>
+            <div className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm font-medium text-cyan-200">
+              RTP alvo 96%
+            </div>
           </div>
         </div>
 
         <section className="grid gap-6 xl:grid-cols-[1.45fr_0.55fr]">
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_30px_80px_rgba(0,0,0,0.35)] backdrop-blur-sm">
             <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               <div>
-                <p className="text-sm text-fuchsia-300">Slot</p>
+                <p className="text-sm text-fuchsia-300">BetClean Originals • Neon Vault</p>
                 <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
                   Fortuna Neon
                 </h1>
                 <p className="mt-3 max-w-2xl text-sm text-white/65 sm:text-base">
-                  Protótipo premium de slot autoral com carteira global,
-                  combinações vencedoras e painel de sessão.
+                  Slot proprietário com leitura imediata de resultado, três linhas
+                  ativas e painel financeiro integrado ao saldo principal.
                 </p>
               </div>
 
@@ -252,7 +245,12 @@ export default function FortunaNeonPage() {
               </div>
             </div>
 
-            <div className="rounded-[28px] border border-white/10 bg-black/40 p-4">
+            <div className="rounded-[28px] border border-white/10 bg-gradient-to-br from-fuchsia-500/10 via-black/50 to-cyan-500/10 p-4">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white/65">
+                <span>3 linhas ativas</span>
+                <span>Liquidação instantânea</span>
+                <span>Leitura por combinação premium</span>
+              </div>
               <div className="grid grid-cols-3 gap-3">
                 {grade.map((item, index) => (
                   <div key={index} className={classesCelula(index, item)}>
@@ -266,9 +264,9 @@ export default function FortunaNeonPage() {
                   <button
                     onClick={girar}
                     disabled={girando || saldo < aposta}
-                    className="rounded-2xl bg-white px-6 py-3 font-semibold text-black transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50"
+                    className="rounded-2xl bg-gradient-to-r from-fuchsia-300 via-white to-cyan-300 px-6 py-3 font-semibold text-black transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    {girando ? "Girando..." : "Girar agora"}
+                    {girando ? "Processando" : "Iniciar spin"}
                   </button>
 
                   <button
@@ -301,14 +299,14 @@ export default function FortunaNeonPage() {
                 </div>
 
                 <div className="text-sm text-white/55">
-                  Linhas pagas: 1, 2 e 3
+                  Linhas liquidadas: 1, 2 e 3
                 </div>
               </div>
 
               {saldo < aposta && !girando && (
                 <p className="mt-4 text-sm text-rose-400">
-                  Saldo insuficiente para essa aposta. Diminua a aposta ou
-                  resete a carteira.
+                  Saldo insuficiente para esta rodada. Ajuste a entrada ou faça
+                  nova recarga na carteira.
                 </p>
               )}
 
@@ -331,8 +329,19 @@ export default function FortunaNeonPage() {
 
           <aside className="space-y-6">
             <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
-              <p className="text-sm text-white/50">Informações</p>
-              <h2 className="mt-2 text-2xl font-semibold">Painel do jogo</h2>
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm text-white/50">Informações</p>
+                  <h2 className="mt-2 text-2xl font-semibold">Painel do jogo</h2>
+                </div>
+                <button
+                  onClick={resetarSessaoVisual}
+                  disabled={girando}
+                  className="rounded-2xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10 disabled:opacity-50"
+                >
+                  Nova sessão
+                </button>
+              </div>
 
               <div className="mt-6 grid grid-cols-2 gap-3">
                 <StatsCard label="Giros" value={String(giros)} />
@@ -370,7 +379,7 @@ export default function FortunaNeonPage() {
 
             <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
               <p className="text-sm text-white/50">Atividade recente</p>
-              <h3 className="mt-2 text-2xl font-semibold">Histórico</h3>
+              <h3 className="mt-2 text-2xl font-semibold">Registro de rodadas</h3>
 
               <div className="mt-6 space-y-3">
                 {historico.length === 0 ? (

@@ -4,6 +4,10 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import Footer from "@/components/Footer";
+import { formatBRL } from "@/lib/currency";
+
+const gameUrl =
+  "https://demogamesfree.pragmaticplay.net/gs2c/openGame.do?lang=pt&cur=BRL&gameSymbol=vs20fruitsw&websiteUrl=https%3A%2F%2Fdemogamesfree.pragmaticplay.net&jurisdiction=99";
 
 export default function SweetBonanzaPage() {
   const router = useRouter();
@@ -16,8 +20,8 @@ export default function SweetBonanzaPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950">
-      <div className="border-b border-white/10 bg-black/20 backdrop-blur sticky top-0 z-40">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(236,72,153,0.16),_transparent_30%),radial-gradient(circle_at_bottom_left,_rgba(34,211,238,0.12),_transparent_26%),#0a0a0f]">
+      <div className="border-b border-white/10 bg-black/25 backdrop-blur sticky top-0 z-40">
         <div className="mx-auto max-w-7xl px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -26,18 +30,18 @@ export default function SweetBonanzaPage() {
               </button>
               <div>
                 <h1 className="text-xl font-bold text-white">Sweet Bonanza</h1>
-                <p className="text-sm text-white/60">Pragmatic Play</p>
+                <p className="text-sm text-white/60">Pragmatic Play • Candy Cluster</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
               <div className="text-right hidden sm:block">
-                <p className="text-sm text-white/60">Saldo Disponível</p>
+                <p className="text-sm text-white/60">Saldo disponível</p>
                 <p className="text-lg font-bold text-amber-400">
-                  R$ {saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  {formatBRL(saldo)}
                 </p>
               </div>
               <a
-                href="https://demogamesfree.pragmaticplay.net/gs2c/openGame.do?lang=pt&cur=BRL&gameSymbol=vs20fruitsw&websiteUrl=https%3A%2F%2Fdemogamesfree.pragmaticplay.net&jurisdiction=99"
+                href={gameUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded-xl bg-white/10 text-white/80 px-3 py-2 text-sm hover:bg-white/20 transition"
@@ -56,23 +60,23 @@ export default function SweetBonanzaPage() {
       </div>
 
       <div className="mx-auto max-w-7xl px-6 py-8">
-        <div className="bg-black/40 rounded-2xl p-4 backdrop-blur">
+        <div className="rounded-3xl border border-white/10 bg-black/35 p-4 shadow-[0_30px_80px_rgba(0,0,0,0.35)] backdrop-blur-sm">
           <div className="mb-4 flex flex-wrap justify-center gap-3 text-sm">
-            <span className="bg-green-500/20 text-green-300 px-3 py-1 rounded-full">RTP: 96.48%</span>
-            <span className="bg-yellow-500/20 text-yellow-300 px-3 py-1 rounded-full">Volatilidade: Alta</span>
-            <span className="bg-purple-500/20 text-purple-300 px-3 py-1 rounded-full">Máx: x100</span>
-            <span className="bg-pink-500/20 text-pink-300 px-3 py-1 rounded-full">🍭 Candy Theme</span>
+            <span className="bg-green-500/20 text-green-300 px-3 py-1 rounded-full">RTP 96.48%</span>
+            <span className="bg-yellow-500/20 text-yellow-300 px-3 py-1 rounded-full">Volatilidade alta</span>
+            <span className="bg-purple-500/20 text-purple-300 px-3 py-1 rounded-full">Max Win x21.100</span>
+            <span className="bg-pink-500/20 text-pink-300 px-3 py-1 rounded-full">Sessão BRL</span>
           </div>
 
-          <div className="relative aspect-video bg-black rounded-xl overflow-hidden mb-4">
+          <div className="relative aspect-video bg-black rounded-2xl overflow-hidden mb-4 border border-white/10">
             {carregando && (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-neutral-900 z-10">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-400 mb-4"></div>
-                <p className="text-white/70 text-sm">Carregando Sweet Bonanza...</p>
+                <p className="text-white/70 text-sm">Inicializando mesa Sweet Bonanza...</p>
               </div>
             )}
             <iframe
-              src="https://demogamesfree.pragmaticplay.net/gs2c/openGame.do?lang=pt&cur=BRL&gameSymbol=vs20fruitsw&websiteUrl=https%3A%2F%2Fdemogamesfree.pragmaticplay.net&jurisdiction=99"
+              src={gameUrl}
               className="w-full h-full border-0"
               title="Sweet Bonanza"
               allowFullScreen
@@ -82,16 +86,16 @@ export default function SweetBonanzaPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-white/5 rounded-xl p-4 text-center">
-              <h3 className="font-semibold text-white mb-2">🎯 Como Jogar</h3>
-              <p className="text-sm text-white/70">6 rolos com sistema Tumble. Combine 8+ símbolos para ganhar</p>
+              <h3 className="font-semibold text-white mb-2">Mecânica</h3>
+              <p className="text-sm text-white/70">6 colunas com sistema tumble e pagamentos por grupos a partir de 8 símbolos.</p>
             </div>
             <div className="bg-white/5 rounded-xl p-4 text-center">
-              <h3 className="font-semibold text-white mb-2">🎁 Recursos</h3>
-              <p className="text-sm text-white/70">Free spins com multiplicadores crescentes até x100</p>
+              <h3 className="font-semibold text-white mb-2">Recursos</h3>
+              <p className="text-sm text-white/70">Rodadas gratuitas com multiplicadores progressivos de até 100x.</p>
             </div>
             <div className="bg-white/5 rounded-xl p-4 text-center">
-              <h3 className="font-semibold text-white mb-2">💰 Apostas</h3>
-              <p className="text-sm text-white/70">Configuração flexível de aposta e sessão segura</p>
+              <h3 className="font-semibold text-white mb-2">Operação</h3>
+              <p className="text-sm text-white/70">Ajuste de stake integrado ao ambiente do provedor com sessão segura.</p>
             </div>
           </div>
 
