@@ -47,7 +47,7 @@ const DemoWalletContext = createContext<DemoWalletContextType | undefined>(
 export function DemoWalletProvider({ children }: { children: ReactNode }) {
   const [saldo, setSaldo] = useState(SALDO_INICIAL);
   const [saldoReal, setSaldoReal] = useState(0);
-  const [nomeUsuario, setNomeUsuario] = useState("Jogador Demo");
+  const [nomeUsuario, setNomeUsuario] = useState("Jogador");
   const [totalApostadoGlobal, setTotalApostadoGlobal] = useState(0);
   const [totalGanhoGlobal, setTotalGanhoGlobal] = useState(0);
   const [totalRodadasGlobal, setTotalRodadasGlobal] = useState(0);
@@ -131,7 +131,7 @@ export function DemoWalletProvider({ children }: { children: ReactNode }) {
   const ranking = useMemo(() => {
     const lista = [
       ...rankingBase,
-      { nome: nomeUsuario || "Jogador Demo", moedas: saldo },
+      { nome: nomeUsuario || "Jogador", moedas: saldo },
     ];
 
     return lista.sort((a, b) => b.moedas - a.moedas).slice(0, 5);

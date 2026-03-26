@@ -11,8 +11,8 @@ export default function Footer() {
         <div className="grid gap-8 md:grid-cols-4">
           {/* Brand */}
           <div className="flex flex-col gap-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 font-bold text-black">
-              D
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-300 via-yellow-400 to-orange-500 font-black text-black shadow-[0_0_20px_rgba(251,191,36,0.35)]">
+              BC
             </div>
             <p className="text-sm text-white/70">
               BetClean - Plataforma Premium de Jogos com Segurança 24/7 e Suporte Profissional.
@@ -98,7 +98,7 @@ export default function Footer() {
                 <FileText size={18} className="text-amber-400" />
                 <div className="text-sm">
                   <p className="font-medium text-white">Licenciado</p>
-                  <p className="text-xs text-white/50">MGA (Demo)</p>
+                  <p className="text-xs text-white/50">MGA / Curacao</p>
                 </div>
               </div>
             </div>
@@ -130,8 +130,8 @@ export default function Footer() {
         <div className="mt-8 rounded-2xl border border-amber-400/20 bg-amber-400/5 p-4 text-xs text-white/70">
           <p className="mb-2 font-semibold text-amber-300">⚠️ Aviso Responsável</p>
           <p>
-            Este é um portal DEMO. Não há dinheiro real envolvido. Os jogos são simulações educacionais apenas. 
-            Se você sofre com problemas de jogo, procure ajuda profissional. Maiores de 18 anos apenas.
+            Aposte com responsabilidade. Defina limites pessoais de depósito e tempo de sessão.
+            Se você sofre com problemas de jogo, procure ajuda profissional. Acesso permitido apenas para maiores de 18 anos.
           </p>
         </div>
       </div>

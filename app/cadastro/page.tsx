@@ -260,7 +260,7 @@ export default function CadastroPage() {
 
           {/* Rodapé */}
           <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-sm text-white/50">
-            <p>🎮 Demo com saldo inicial de <span className="text-emerald-300">10.000 moedas</span></p>
+            <p>🎮 Bônus inicial de <span className="text-emerald-300">R$ 100,00</span> para começar</p>
           </div>
         </div>
       </div>

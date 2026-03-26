@@ -8,7 +8,10 @@ import { useDemoWallet } from "@/components/DemoWalletProvider";
 import { getAccounts, getRecoveryLog, RecoveryLogItem, DemoAccount } from "@/lib/authStorage";
 
 function formatarMoedas(valor: number) {
-  return `${valor.toLocaleString("pt-BR")} moedas`;
+  return valor.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
 }
 
 export default function PerfilPage() {
@@ -45,7 +48,7 @@ export default function PerfilPage() {
 
         <section className="mt-8 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
           <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
-            <p className="text-sm text-white/50">Perfil demo</p>
+            <p className="text-sm text-white/50">Perfil da conta</p>
             <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
               Área do jogador
             </h1>
@@ -103,7 +106,7 @@ export default function PerfilPage() {
                     </div>
                     <div>
                       <p className="font-medium">{item.nome}</p>
-                      <p className="text-sm text-white/45">Jogador demo</p>
+                      <p className="text-sm text-white/45">Jogador</p>
                     </div>
                   </div>
 

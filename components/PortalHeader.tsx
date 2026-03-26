@@ -2,7 +2,7 @@
 
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import { Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 function formatarMoedas(valor: number) {
@@ -21,6 +21,12 @@ export default function PortalHeader({
 }: PortalHeaderProps) {
   const { saldo, nomeUsuario } = useDemoWallet();
   const [menuAberto, setMenuAberto] = useState(false);
+  const [isLogado, setIsLogado] = useState(false);
+
+  useEffect(() => {
+    const email = window.localStorage.getItem("demo-wallet-email");
+    setIsLogado(!!email);
+  }, []);
 
   return (
     <header className="border-b border-white/10 bg-black/30 backdrop-blur sticky top-0 z-40">
@@ -68,7 +74,7 @@ export default function PortalHeader({
 
         {/* Right Section */}
         <div className="flex items-center gap-3">
-          {nomeUsuario && nomeUsuario !== "Jogador Demo" ? (
+          {isLogado ? (
             <>
               {/* Logged In State */}
               <div className="hidden lg:block rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/80">

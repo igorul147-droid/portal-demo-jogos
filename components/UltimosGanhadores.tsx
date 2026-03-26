@@ -10,7 +10,10 @@ const ultimasVitorias = [
 ];
 
 function formatarMoedas(valor: number) {
-  return `${valor.toLocaleString('pt-BR')} moedas`;
+  return valor.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
 }
 
 export default function UltimosGanhadores() {
@@ -66,7 +69,7 @@ export default function UltimosGanhadores() {
       </div>
 
       <div className="mt-4 rounded-2xl border border-emerald-400/20 bg-emerald-400/5 p-3 text-center text-xs text-white/70">
-        <p>Próxima atualização em 30 segundos • Demo com saldos simulados</p>
+        <p>Próxima atualização em 30 segundos • Monitoramento contínuo de atividade</p>
       </div>
     </div>
   );

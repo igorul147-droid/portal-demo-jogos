@@ -53,17 +53,17 @@ export default function ModalResponsavel() {
               Você é maior de idade?
             </h3>
             <p className="text-sm text-white/70">
-              Este é um portal de jogos demo. Apenas maiores de 18 anos podem acessar.
+              Esta plataforma é destinada exclusivamente para maiores de 18 anos.
             </p>
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-black/40 p-4">
             <h3 className="mb-2 font-semibold text-white flex items-center gap-2">
               <span className="text-lg">💰</span>
-              Demo - Sem Dinheiro Real
+              Conta, depósitos e saques
             </h3>
             <p className="text-sm text-white/70">
-              Este é um simulador educacional. Não há envolvimento de dinheiro real, débito ou crédito.
+              Operações financeiras podem exigir validação de identidade e regras de compliance.
             </p>
           </div>
 
