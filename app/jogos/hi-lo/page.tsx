@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import Footer from "@/components/Footer";
@@ -28,6 +28,11 @@ function isVermelha(naipe: string) {
 export default function HiLoPage() {
   const router = useRouter();
   const { saldo, setSaldo, registrarResultado } = useDemoWallet();
+
+  useEffect(() => {
+    const email = window.localStorage.getItem("demo-wallet-email");
+    if (!email) router.push("/login");
+  }, [router]);
 
   const [aposta, setAposta] = useState(100);
   const [jogando, setJogando] = useState(false);

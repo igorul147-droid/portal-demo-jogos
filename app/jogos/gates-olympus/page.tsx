@@ -12,9 +12,11 @@ export default function GatesOlympusPage() {
   const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
+    const email = window.localStorage.getItem("demo-wallet-email");
+    if (!email) router.push("/login");
     const timer = setTimeout(() => setCarregando(false), 2000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [router]);
 
   if (carregando) {
     return (
@@ -48,10 +50,16 @@ export default function GatesOlympusPage() {
               href={gameUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-semibold text-black"
+              className="rounded-lg bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/80 hover:bg-white/20 transition"
             >
-              Abrir em Nova Aba
+              Nova Aba
             </a>
+            <button
+              onClick={() => document.documentElement.requestFullscreen?.()}
+              className="rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-semibold text-black hover:bg-amber-400 transition"
+            >
+              ⛶ Tela Cheia
+            </button>
           </div>
         </div>
       </div>

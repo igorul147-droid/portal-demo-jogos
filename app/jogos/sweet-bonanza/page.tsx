@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import Footer from "@/components/Footer";
@@ -9,6 +9,11 @@ export default function SweetBonanzaPage() {
   const router = useRouter();
   const { saldo } = useDemoWallet();
   const [carregando, setCarregando] = useState(true);
+
+  useEffect(() => {
+    const email = window.localStorage.getItem("demo-wallet-email");
+    if (!email) router.push("/login");
+  }, [router]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950">
@@ -35,10 +40,16 @@ export default function SweetBonanzaPage() {
                 href="https://demogamesfree.pragmaticplay.net/gs2c/openGame.do?lang=pt&cur=BRL&gameSymbol=vs20fruitsw&websiteUrl=https%3A%2F%2Fdemogamesfree.pragmaticplay.net&jurisdiction=99"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="rounded-xl bg-white/10 text-white/80 px-3 py-2 text-sm hover:bg-white/20 transition"
+              >
+                Nova Aba
+              </a>
+              <button
+                onClick={() => document.documentElement.requestFullscreen?.()}
                 className="rounded-xl bg-pink-600 text-white px-4 py-2 text-sm font-semibold hover:bg-pink-500 transition"
               >
                 ⛶ Tela Cheia
-              </a>
+              </button>
             </div>
           </div>
         </div>

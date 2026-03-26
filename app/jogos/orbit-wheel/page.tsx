@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import PortalHeader from "@/components/PortalHeader";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import StatsCard from "@/components/StatsCard";
@@ -30,6 +31,12 @@ function sortearResultado() {
 export default function OrbitWheelPage() {
   const { saldo, setSaldo, resetarTudoGlobal, registrarResultado } =
     useDemoWallet();
+
+  const router = useRouter();
+  useEffect(() => {
+    const email = window.localStorage.getItem("demo-wallet-email");
+    if (!email) router.push("/login");
+  }, [router]);
 
   const [aposta, setAposta] = useState(100);
   const [girando, setGirando] = useState(false);

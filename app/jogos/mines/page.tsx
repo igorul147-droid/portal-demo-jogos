@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import Footer from "@/components/Footer";
@@ -30,6 +30,11 @@ function calcularMultiplicador(gemsReveladas: number, bombs: number): number {
 export default function MinesPage() {
   const router = useRouter();
   const { saldo, setSaldo, registrarResultado } = useDemoWallet();
+
+  useEffect(() => {
+    const email = window.localStorage.getItem("demo-wallet-email");
+    if (!email) router.push("/login");
+  }, [router]);
 
   const [aposta, setAposta] = useState(100);
   const [bombs, setBombs] = useState(3);

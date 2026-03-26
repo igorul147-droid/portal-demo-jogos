@@ -15,14 +15,33 @@ type CatalogGame = {
 const providers: CatalogGame["provider"][] = ["PG", "PP", "POPOK", "G759", "Tada"];
 
 const jogos: CatalogGame[] = [
+  // PG Soft
   { nome: "Fortune Tiger", provider: "PG", rota: "/jogos/fortune-tiger", capa: "🐯" },
   { nome: "Mahjong Ways", provider: "PG", rota: "/jogos/mahjong-ways", capa: "🎋" },
   { nome: "Dragon Hatch", provider: "PG", rota: "/jogos/dragon-hatch", capa: "🐉" },
+  { nome: "Fortune Mouse", provider: "PG", rota: "/jogos/fortune-mouse", capa: "🐭" },
+  { nome: "Wild Bandito", provider: "PG", rota: "/jogos/wild-bandito", capa: "🎸" },
+  { nome: "Piggy Gold", provider: "PG", rota: "/jogos/piggy-gold", capa: "🐷" },
+  { nome: "Candy Burst", provider: "PG", rota: "/jogos/candy-burst", capa: "🍬" },
+  { nome: "Ganesha Gold", provider: "PG", rota: "/jogos/ganesha-gold", capa: "🐘" },
+  { nome: "Leprechaun Riches", provider: "PG", rota: "/jogos/leprechaun-riches", capa: "☘️" },
+  { nome: "Gem Saviour", provider: "PG", rota: "/jogos/gem-saviour", capa: "💎" },
+  { nome: "Tree of Fortune", provider: "PG", rota: "/jogos/tree-of-fortune", capa: "🌳" },
+  { nome: "Fortuna Neon", provider: "PG", rota: "/jogos/fortuna-neon", capa: "⚡" },
+  // Pragmatic Play
   { nome: "Sweet Bonanza", provider: "PP", rota: "/jogos/sweet-bonanza", capa: "🍭" },
   { nome: "Gates of Olympus", provider: "PP", rota: "/jogos/gates-olympus", capa: "⚡" },
   { nome: "Wild West Gold", provider: "PP", rota: "/jogos/wild-west-gold", capa: "🏜️" },
+  { nome: "Starlight Princess", provider: "PP", rota: "/jogos/starlight-princess", capa: "⭐" },
+  { nome: "Big Bass Bonanza", provider: "PP", rota: "/jogos/big-bass-bonanza", capa: "🎣" },
+  { nome: "Wolf Gold", provider: "PP", rota: "/jogos/wolf-gold", capa: "🐺" },
+  { nome: "Book of Fallen", provider: "PP", rota: "/jogos/book-of-fallen", capa: "📖" },
+  { nome: "Joker's Jewels", provider: "PP", rota: "/jogos/jokers-jewels", capa: "🃏" },
+  // BetClean Originais
   { nome: "Mines", provider: "POPOK", rota: "/jogos/mines", capa: "💣" },
+  { nome: "Orbit Wheel", provider: "POPOK", rota: "/jogos/orbit-wheel", capa: "🎡" },
   { nome: "Tower", provider: "G759", rota: "/jogos/tower", capa: "⬆️" },
+  { nome: "Turbo Rise", provider: "G759", rota: "/jogos/turbo-rise", capa: "✈️" },
   { nome: "Hi-Lo", provider: "Tada", rota: "/jogos/hi-lo", capa: "🃏" },
 ];
 

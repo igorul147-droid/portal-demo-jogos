@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import PortalHeader from "@/components/PortalHeader";
 import Footer from "@/components/Footer";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
@@ -29,6 +30,12 @@ function gerarCrashMultiplicador() {
 
 export default function AviatorPage() {
   const { saldo, setSaldo, resetarTudoGlobal, registrarResultado } = useDemoWallet();
+
+  const router = useRouter();
+  useEffect(() => {
+    const email = window.localStorage.getItem("demo-wallet-email");
+    if (!email) router.push("/login");
+  }, [router]);
 
   // Estados do jogo
   const [aposta, setAposta] = useState(100);

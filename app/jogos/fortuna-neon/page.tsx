@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import PortalHeader from "@/components/PortalHeader";
 import StatsCard from "@/components/StatsCard";
@@ -71,8 +72,14 @@ function formatarMoedas(valor: number) {
 }
 
 export default function FortunaNeonPage() {
+  const router = useRouter();
   const { saldo, setSaldo, resetarTudoGlobal, registrarResultado } =
     useDemoWallet();
+
+  useEffect(() => {
+    const email = window.localStorage.getItem("demo-wallet-email");
+    if (!email) router.push("/login");
+  }, [router]);
 
   const [grade, setGrade] = useState<string[]>(gradeInicial);
   const [aposta, setAposta] = useState(100);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 
@@ -26,6 +26,23 @@ export default function LocalSlotPage({
 }: LocalSlotPageProps) {
   const router = useRouter();
   const { saldo, setSaldo, registrarResultado } = useDemoWallet();
+
+  const [telaCheia, setTelaCheia] = useState(false);
+
+  useEffect(() => {
+    const email = window.localStorage.getItem("demo-wallet-email");
+    if (!email) router.push("/login");
+  }, [router]);
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+      setTelaCheia(true);
+    } else {
+      document.exitFullscreen();
+      setTelaCheia(false);
+    }
+  }
 
   const [aposta, setAposta] = useState(100);
   const [girando, setGirando] = useState(false);
@@ -94,9 +111,18 @@ export default function LocalSlotPage({
               {icon} {title}
             </h1>
           </div>
-          <p className="text-xs text-amber-300 sm:text-sm">
-            Saldo: {saldo.toLocaleString("pt-BR")} moedas
-          </p>
+          <div className="flex items-center gap-3">
+            <p className="text-xs text-amber-300 sm:text-sm">
+              Saldo: {saldo.toLocaleString("pt-BR")} moedas
+            </p>
+            <button
+              onClick={toggleFullscreen}
+              title={telaCheia ? "Sair da tela cheia" : "Tela cheia"}
+              className="rounded-lg bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/80 transition hover:bg-white/20"
+            >
+              {telaCheia ? "⊠" : "⛶"}
+            </button>
+          </div>
         </div>
       </div>
 
