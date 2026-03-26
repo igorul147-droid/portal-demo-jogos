@@ -1,9 +1,11 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import PortalHeader from "@/components/PortalHeader";
 import Footer from "@/components/Footer";
 import StatsCard from "@/components/StatsCard";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
+import { getAccounts, getRecoveryLog, RecoveryLogItem, DemoAccount } from "@/lib/authStorage";
 
 function formatarMoedas(valor: number) {
   return `${valor.toLocaleString("pt-BR")} moedas`;
@@ -19,6 +21,13 @@ export default function PerfilPage() {
     totalRodadasGlobal,
     ranking,
   } = useDemoWallet();
+  const [contas, setContas] = useState<DemoAccount[]>([]);
+  const [emailsRecuperacao, setEmailsRecuperacao] = useState<RecoveryLogItem[]>([]);
+
+  useEffect(() => {
+    setContas(getAccounts());
+    setEmailsRecuperacao(getRecoveryLog());
+  }, []);
 
   const lucroGlobal = totalGanhoGlobal - totalApostadoGlobal;
 
@@ -105,6 +114,50 @@ export default function PerfilPage() {
               ))}
             </div>
           </aside>
+        </section>
+
+        <section className="mt-6 grid gap-6 xl:grid-cols-2">
+          <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+            <h3 className="text-xl font-semibold">Historico de cadastro</h3>
+            <p className="mt-1 text-sm text-white/55">Cada email e CPF so podem ser cadastrados uma vez.</p>
+
+            <div className="mt-4 space-y-3">
+              {contas.length === 0 && (
+                <p className="text-sm text-white/60">Nenhum cadastro encontrado neste dispositivo.</p>
+              )}
+              {contas.map((conta) => (
+                <div
+                  key={conta.email}
+                  className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm"
+                >
+                  <p className="font-semibold">{conta.nome}</p>
+                  <p className="text-white/65">{conta.email}</p>
+                  <p className="text-white/45">Criado em {new Date(conta.criadoEm).toLocaleString("pt-BR")}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+            <h3 className="text-xl font-semibold">Historico de recuperacao</h3>
+            <p className="mt-1 text-sm text-white/55">Ultimos emails padrao enviados para recuperar conta.</p>
+
+            <div className="mt-4 space-y-3">
+              {emailsRecuperacao.length === 0 && (
+                <p className="text-sm text-white/60">Nenhum email de recuperacao foi enviado ainda.</p>
+              )}
+              {emailsRecuperacao.map((item, index) => (
+                <div
+                  key={`${item.email}-${item.enviadoEm}-${index}`}
+                  className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm"
+                >
+                  <p className="font-semibold">{item.email}</p>
+                  <p className="text-white/45">{new Date(item.enviadoEm).toLocaleString("pt-BR")}</p>
+                  <p className="mt-1 text-xs text-white/55">{item.template}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
       </div>
 

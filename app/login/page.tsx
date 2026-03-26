@@ -4,6 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import Link from "next/link";
+import {
+  findAccountByEmail,
+  normalizeEmail,
+  registrarEmailRecuperacao,
+} from "@/lib/authStorage";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,11 +19,8 @@ export default function LoginPage() {
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
   const [mostrarRecuperacao, setMostrarRecuperacao] = useState(false);
-  const [dadosRecuperados, setDadosRecuperados] = useState<{
-    nome: string;
-    email: string;
-    cpf: string;
-  } | null>(null);
+  const [emailRecuperacao, setEmailRecuperacao] = useState("");
+  const [mensagemRecuperacao, setMensagemRecuperacao] = useState("");
 
   function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -38,16 +40,14 @@ export default function LoginPage() {
 
     // Simula delay de processamento
     setTimeout(() => {
-      // Busca no localStorage
-      const nomeArmazenado = window.localStorage.getItem("demo-wallet-nome");
-      const emailArmazenado = window.localStorage.getItem("demo-wallet-email");
+      const conta = findAccountByEmail(email);
 
-      // Para este demo, aceita qualquer email/senha válida
-      // Em produção, faria validação contra backend
-      if (emailArmazenado && email === emailArmazenado) {
-        if (nomeArmazenado) {
-          setNomeUsuario(nomeArmazenado);
-        }
+      if (conta && conta.senha === senha) {
+        setNomeUsuario(conta.nome);
+        window.localStorage.setItem("demo-wallet-nome", conta.nome);
+        window.localStorage.setItem("demo-wallet-email", conta.email);
+        window.localStorage.setItem("demo-wallet-cpf", conta.cpf);
+        window.localStorage.setItem("demo-wallet-data-nascimento", conta.dataNascimento);
         setCarregando(false);
         router.push("/");
       } else {
@@ -57,40 +57,30 @@ export default function LoginPage() {
     }, 800);
   }
 
-  function handleRecuperacao() {
+  function handleRecuperacao(e: React.FormEvent) {
+    e.preventDefault();
     setErro("");
+    setMensagemRecuperacao("");
 
-    // Busca dados armazenados no localStorage
-    const nomeArmazenado = window.localStorage.getItem("demo-wallet-nome");
-    const emailArmazenado = window.localStorage.getItem("demo-wallet-email");
-    const cpfArmazenado = window.localStorage.getItem("demo-wallet-cpf");
+    const emailNormalizado = normalizeEmail(emailRecuperacao);
 
-    if (nomeArmazenado && emailArmazenado) {
-      setDadosRecuperados({
-        nome: nomeArmazenado,
-        email: emailArmazenado,
-        cpf: cpfArmazenado || "Não informado"
-      });
-    } else {
-      setErro("Nenhuma conta encontrada neste dispositivo");
+    if (!emailNormalizado.includes("@")) {
+      setErro("Informe um email valido para recuperar a conta");
+      return;
     }
-  }
 
-  function handleResetarConta() {
-    if (confirm("Tem certeza que deseja resetar sua conta? Todos os dados serão perdidos.")) {
-      // Remove todos os dados do localStorage
-      window.localStorage.removeItem("demo-wallet-nome");
-      window.localStorage.removeItem("demo-wallet-email");
-      window.localStorage.removeItem("demo-wallet-cpf");
-      window.localStorage.removeItem("demo-wallet-data-nascimento");
-      window.localStorage.removeItem("demo-wallet-saldo");
+    const conta = findAccountByEmail(emailNormalizado);
 
-      setDadosRecuperados(null);
-      setMostrarRecuperacao(false);
-      setErro("");
-      alert("Conta resetada com sucesso! Você pode criar uma nova conta.");
-      router.push("/cadastro");
+    if (!conta) {
+      setErro("Nao encontramos conta para este email");
+      return;
     }
+
+    registrarEmailRecuperacao(emailNormalizado);
+    setMensagemRecuperacao(
+      "Enviamos um email padrao de recuperacao. Verifique sua caixa de entrada e spam."
+    );
+    setEmailRecuperacao("");
   }
 
   return (
@@ -170,46 +160,28 @@ export default function LoginPage() {
             <div className="mt-6 rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur">
               <h3 className="mb-4 text-lg font-semibold text-white">Recuperar Conta</h3>
 
-              {!dadosRecuperados ? (
-                <div className="space-y-4">
-                  <p className="text-sm text-white/70">
-                    Clique em "Buscar Dados" para recuperar suas informações de conta armazenadas neste dispositivo.
-                  </p>
-                  <button
-                    onClick={handleRecuperacao}
-                    className="w-full rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-3 font-semibold text-white transition hover:scale-[1.02]"
-                  >
-                    Buscar Dados
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="rounded-2xl border border-green-400/20 bg-green-400/10 p-4">
-                    <h4 className="font-semibold text-green-300 mb-2">Dados Encontrados:</h4>
-                    <div className="text-sm text-white/80 space-y-1">
-                      <p><strong>Nome:</strong> {dadosRecuperados.nome}</p>
-                      <p><strong>Email:</strong> {dadosRecuperados.email}</p>
-                      <p><strong>CPF:</strong> {dadosRecuperados.cpf}</p>
-                    </div>
-                    <p className="text-xs text-white/60 mt-2">
-                      💡 Use qualquer senha de 6+ caracteres para fazer login
-                    </p>
-                  </div>
+              <form onSubmit={handleRecuperacao} className="space-y-4">
+                <p className="text-sm text-white/70">
+                  Informe seu email. Vamos enviar uma mensagem padrao de recuperacao da conta.
+                </p>
+                <input
+                  type="email"
+                  value={emailRecuperacao}
+                  onChange={(e) => setEmailRecuperacao(e.target.value)}
+                  placeholder="seu@email.com"
+                  className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-white/40 focus:border-amber-400/50 focus:ring-2 focus:ring-amber-400/20"
+                />
+                <button
+                  type="submit"
+                  className="w-full rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-3 font-semibold text-white transition hover:scale-[1.02]"
+                >
+                  Enviar email de recuperacao
+                </button>
+              </form>
 
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => setMostrarRecuperacao(false)}
-                      className="flex-1 rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
-                    >
-                      Fechar
-                    </button>
-                    <button
-                      onClick={handleResetarConta}
-                      className="flex-1 rounded-2xl bg-gradient-to-r from-red-500 to-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:scale-[1.02]"
-                    >
-                      Resetar Conta
-                    </button>
-                  </div>
+              {mensagemRecuperacao && (
+                <div className="mt-4 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-200">
+                  {mensagemRecuperacao}
                 </div>
               )}
             </div>

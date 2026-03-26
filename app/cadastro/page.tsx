@@ -5,6 +5,13 @@ import { useRouter } from "next/navigation";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import Footer from "@/components/Footer";
 import Link from "next/link";
+import {
+  cpfJaCadastrado,
+  emailJaCadastrado,
+  normalizeCpf,
+  normalizeEmail,
+  upsertAccount,
+} from "@/lib/authStorage";
 
 export default function CadastroPage() {
   const router = useRouter();
@@ -98,14 +105,38 @@ export default function CadastroPage() {
 
     // Simula delay de processamento
     setTimeout(() => {
+      const emailNormalizado = normalizeEmail(email);
+      const cpfNormalizado = normalizeCpf(cpf);
+
+      if (emailJaCadastrado(emailNormalizado)) {
+        setErro("Este email ja foi cadastrado. Use o login ou recupere a senha.");
+        setCarregando(false);
+        return;
+      }
+
+      if (cpfJaCadastrado(cpfNormalizado)) {
+        setErro("Este CPF ja possui cadastro. Use o login ou recupere a senha.");
+        setCarregando(false);
+        return;
+      }
+
+      upsertAccount({
+        nome: nome.trim(),
+        email: emailNormalizado,
+        cpf: cpfNormalizado,
+        dataNascimento,
+        senha,
+        criadoEm: new Date().toISOString(),
+      });
+
       // Registra o novo usuário
       setNomeUsuario(nome);
       setSaldo(10000); // Saldo inicial de 10.000 moedas
 
       // Salva no localStorage para persistência
-      window.localStorage.setItem("demo-wallet-nome", nome);
-      window.localStorage.setItem("demo-wallet-email", email);
-      window.localStorage.setItem("demo-wallet-cpf", cpf.replace(/\D/g, ""));
+      window.localStorage.setItem("demo-wallet-nome", nome.trim());
+      window.localStorage.setItem("demo-wallet-email", emailNormalizado);
+      window.localStorage.setItem("demo-wallet-cpf", cpfNormalizado);
       window.localStorage.setItem("demo-wallet-data-nascimento", dataNascimento);
       window.localStorage.setItem("demo-wallet-saldo", "10000");
 
