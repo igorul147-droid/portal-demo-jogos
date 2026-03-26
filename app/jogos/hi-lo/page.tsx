@@ -110,17 +110,17 @@ export default function HiLoPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 text-white">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.18),transparent_34%),#050811] text-white">
       {/* Header */}
-      <div className="border-b border-white/10 bg-black/20 backdrop-blur sticky top-0 z-40">
+      <div className="sticky top-0 z-40 border-b border-white/10 bg-black/30 backdrop-blur">
         <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button onClick={() => router.push("/")} className="text-white/70 hover:text-white transition">
               ← Voltar
             </button>
             <div>
-              <h1 className="text-xl font-bold">🃏 Hi-Lo</h1>
-              <p className="text-sm text-white/60">BetClean Original</p>
+              <h1 className="text-xl font-bold tracking-wide">Hi-Lo</h1>
+              <p className="text-sm text-white/60">BetClean Original • Cards</p>
             </div>
           </div>
           <div className="text-right">
@@ -135,19 +135,23 @@ export default function HiLoPage() {
       <main className="mx-auto max-w-3xl px-4 py-8">
         {/* Banner Resultado */}
         {resultado && (
-          <div className={`mb-6 rounded-2xl p-4 text-center text-xl font-bold ${
+          <div className={`mb-6 rounded-2xl p-4 text-center text-lg font-bold ${
             resultado === "win"
               ? "bg-emerald-500/20 border border-emerald-400/40 text-emerald-300"
               : "bg-red-500/20 border border-red-400/40 text-red-300"
           }`}>
             {resultado === "win"
-              ? `🎉 Você sacou ${formatBRL(lucroAcumulado)}! (${multiplicador}x)`
-              : "❌ Errou! Você perdeu esta rodada."}
+              ? `Saque realizado: ${formatBRL(lucroAcumulado)} (${multiplicador}x)`
+              : "Previsão incorreta. A rodada foi encerrada."}
           </div>
         )}
 
         {/* Área da Carta */}
-        <div className="rounded-2xl border border-white/10 bg-black/40 p-8 mb-6">
+        <div className="mb-6 rounded-3xl border border-sky-400/20 bg-black/40 p-8 shadow-[0_0_24px_rgba(59,130,246,0.10)]">
+          <div className="mb-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-xs uppercase tracking-[0.2em] text-white/55">
+            <span>Table</span>
+            <span>1 deck mode</span>
+          </div>
           {!cartaAtual ? (
             <div className="flex flex-col items-center gap-4">
               <div className="w-28 h-40 rounded-xl bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center text-4xl">
@@ -170,15 +174,15 @@ export default function HiLoPage() {
 
               {/* Stats */}
               <div className="grid grid-cols-3 gap-4 w-full text-center">
-                <div className="bg-white/5 rounded-xl p-3">
+                <div className="bg-white/5 rounded-2xl p-3">
                   <p className="text-xs text-white/50">Acertos</p>
                   <p className="text-xl font-bold text-emerald-300">{acertos}</p>
                 </div>
-                <div className="bg-white/5 rounded-xl p-3">
+                <div className="bg-white/5 rounded-2xl p-3">
                   <p className="text-xs text-white/50">Multiplicador</p>
                   <p className="text-xl font-bold text-amber-300">{multiplicador}x</p>
                 </div>
-                <div className="bg-white/5 rounded-xl p-3">
+                <div className="bg-white/5 rounded-2xl p-3">
                   <p className="text-xs text-white/50">Ganho</p>
                   <p className="text-xl font-bold text-blue-300">{formatBRL(lucroAcumulado)}</p>
                 </div>
@@ -199,7 +203,7 @@ export default function HiLoPage() {
                     aposta === v ? "bg-amber-500 text-black" : "bg-white/10 hover:bg-white/20"
                   }`}
                 >
-                  {v.toLocaleString()}
+                  {formatBRL(v)}
                 </button>
               ))}
             </div>
@@ -208,7 +212,7 @@ export default function HiLoPage() {
               disabled={saldo < aposta}
               className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-4 font-bold text-white text-lg transition hover:scale-[1.02] disabled:opacity-50"
             >
-              {encerrado ? "🔄 Jogar Novamente" : "🃏 Revelar Carta"}
+              {encerrado ? "Nova mão" : "Abrir mesa"}
             </button>
           </div>
         ) : (
@@ -218,19 +222,19 @@ export default function HiLoPage() {
                 onClick={() => adivinhar("lower")}
                 className="rounded-xl bg-blue-600 hover:bg-blue-500 py-4 font-bold text-white text-lg transition active:scale-95"
               >
-                ⬇️ Menor
+                Lower
               </button>
               <button
                 onClick={() => adivinhar("equal")}
                 className="rounded-xl bg-purple-600 hover:bg-purple-500 py-4 font-bold text-white text-lg transition active:scale-95"
               >
-                ➡️ Igual
+                Equal
               </button>
               <button
                 onClick={() => adivinhar("higher")}
                 className="rounded-xl bg-red-600 hover:bg-red-500 py-4 font-bold text-white text-lg transition active:scale-95"
               >
-                ⬆️ Maior
+                Higher
               </button>
             </div>
 
@@ -239,13 +243,13 @@ export default function HiLoPage() {
               disabled={acertos === 0}
               className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-500 py-3 font-bold text-white transition disabled:opacity-50"
             >
-              💰 Sacar ({formatBRL(lucroAcumulado)})
+              Encerrar e sacar ({formatBRL(lucroAcumulado)})
             </button>
           </div>
         )}
 
-        <div className="mt-6 rounded-2xl bg-blue-500/10 border border-blue-500/20 p-4 text-sm text-white/70 space-y-1">
-          <p className="font-semibold text-blue-300 mb-2">📖 Como jogar</p>
+        <div className="mt-6 rounded-3xl bg-blue-500/10 border border-blue-500/20 p-4 text-sm text-white/70 space-y-1">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.15em] text-blue-300">Como operar</p>
           <p>• Adivinhe se a próxima carta é Maior, Menor ou Igual</p>
           <p>• Cada acerto aumenta o multiplicador em 0.5x</p>
           <p>• Saque quando quiser para garantir seus ganhos</p>

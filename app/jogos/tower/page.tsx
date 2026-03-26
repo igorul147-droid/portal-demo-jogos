@@ -104,17 +104,17 @@ export default function TowerPage() {
   const ganhoSecao = andarAtual > 0 ? Math.floor(aposta * MULTIPLICADORES[andarAtual - 1]) : 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 text-white">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.20),transparent_38%),#050811] text-white">
       {/* Header */}
-      <div className="border-b border-white/10 bg-black/20 backdrop-blur sticky top-0 z-40">
+      <div className="sticky top-0 z-40 border-b border-white/10 bg-black/30 backdrop-blur">
         <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button onClick={() => router.push("/")} className="text-white/70 hover:text-white transition">
               ← Voltar
             </button>
             <div>
-              <h1 className="text-xl font-bold">⬆️ Tower</h1>
-              <p className="text-sm text-white/60">BetClean Original</p>
+              <h1 className="text-xl font-bold tracking-wide">Tower</h1>
+              <p className="text-sm text-white/60">BetClean Original • Ascension</p>
             </div>
           </div>
           <div className="text-right">
@@ -129,20 +129,24 @@ export default function TowerPage() {
       <main className="mx-auto max-w-4xl px-4 py-8">
         {/* Banner Resultado */}
         {resultado && (
-          <div className={`mb-6 rounded-2xl p-4 text-center text-xl font-bold ${
+          <div className={`mb-6 rounded-2xl p-4 text-center text-lg font-bold ${
             resultado === "win"
               ? "bg-emerald-500/20 border border-emerald-400/40 text-emerald-300"
               : "bg-red-500/20 border border-red-400/40 text-red-300"
           }`}>
             {resultado === "win"
-              ? `🏆 Você ganhou ${formatBRL(ganhoFinal)}!`
-              : "💥 Bomba! Você bateu no bloco errado."}
+              ? `Retorno confirmado: ${formatBRL(ganhoFinal)}`
+              : "Trajeto interrompido. Nenhum retorno nesta rodada."}
           </div>
         )}
 
         <div className="grid lg:grid-cols-[1fr_260px] gap-6">
           {/* Torre */}
-          <div className="rounded-2xl border border-white/10 bg-black/40 p-4">
+          <div className="rounded-3xl border border-indigo-400/20 bg-black/40 p-4 shadow-[0_0_24px_rgba(99,102,241,0.10)]">
+            <div className="mb-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-xs uppercase tracking-[0.2em] text-white/55">
+              <span>Climb Grid</span>
+              <span>8 níveis</span>
+            </div>
             <div className="space-y-2">
               {Array.from({ length: LINHAS }).map((_, linhaIdx) => {
                 const andInvertido = LINHAS - 1 - linhaIdx;
@@ -175,7 +179,7 @@ export default function TowerPage() {
                               key={colIdx}
                               disabled={!isAtivo}
                               onClick={() => escolher(colIdx)}
-                              className={`rounded-lg py-3 text-lg font-bold transition-all ${
+                              className={`rounded-lg py-3 text-sm font-black uppercase tracking-[0.15em] transition-all ${
                                 isAtivo
                                   ? "bg-white/10 hover:bg-white/20 active:scale-95 cursor-pointer border border-white/20"
                                   : icon === "💣"
@@ -185,7 +189,7 @@ export default function TowerPage() {
                                   : "bg-white/5 border border-white/5"
                               }`}
                             >
-                              {icon || (isAtivo ? "?" : "")}
+                              {icon === "💣" ? "MINE" : icon === "✅" ? "SAFE" : isAtivo ? "PICK" : ""}
                             </button>
                           );
                         })}
@@ -201,16 +205,16 @@ export default function TowerPage() {
           <div className="space-y-4">
             {/* Progresso */}
             {jogando && andarAtual > 0 && (
-              <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-4">
-                <p className="text-sm text-emerald-300 mb-1">💰 Garantido agora</p>
+              <div className="rounded-3xl border border-emerald-400/20 bg-emerald-400/10 p-4">
+                <p className="text-xs uppercase tracking-[0.2em] text-emerald-300 mb-1">Valor protegido</p>
                 <p className="text-2xl font-bold text-emerald-300">{formatBRL(ganhoSecao)}</p>
                 <p className="text-sm text-white/60">Andar {andarAtual} de {LINHAS}</p>
               </div>
             )}
 
             {/* Config */}
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <h3 className="font-bold mb-3">Aposta</h3>
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-4">
+              <h3 className="mb-3 text-sm font-bold uppercase tracking-[0.15em] text-white/70">Aposta</h3>
               <div className="grid grid-cols-2 gap-2">
                 {[50, 100, 250, 500, 1000, 2500].map(v => (
                   <button
@@ -223,15 +227,15 @@ export default function TowerPage() {
                         : "bg-white/10 text-white hover:bg-white/20 disabled:opacity-50"
                     }`}
                   >
-                    {v.toLocaleString()}
+                    {formatBRL(v)}
                   </button>
                 ))}
               </div>
             </div>
 
             {/* Multiplicadores */}
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <h3 className="font-bold mb-2 text-sm">Multiplicadores</h3>
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-4">
+              <h3 className="mb-2 text-sm font-bold uppercase tracking-[0.15em] text-white/70">Multiplicadores</h3>
               <div className="space-y-1">
                 {MULTIPLICADORES.slice().reverse().map((m, i) => (
                   <div key={i} className="flex justify-between text-xs text-white/60">
@@ -250,7 +254,7 @@ export default function TowerPage() {
                   disabled={saldo < aposta}
                   className="w-full rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 py-4 font-bold text-white text-lg transition hover:scale-[1.02] disabled:opacity-50"
                 >
-                  {encerrado ? "🔄 Jogar Novamente" : "🚀 Subir Torre"}
+                  {encerrado ? "Nova escalada" : "Iniciar escalada"}
                 </button>
               ) : (
                 <button
@@ -258,13 +262,13 @@ export default function TowerPage() {
                   disabled={andarAtual === 0}
                   className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 py-4 font-bold text-white text-lg transition hover:scale-[1.02] disabled:opacity-50"
                 >
-                  💰 Sacar ({formatBRL(ganhoSecao)})
+                  Encerrar e sacar ({formatBRL(ganhoSecao)})
                 </button>
               )}
             </div>
 
-            <div className="rounded-2xl bg-blue-500/10 border border-blue-500/20 p-4 text-sm text-white/70 space-y-1">
-              <p className="font-semibold text-blue-300 mb-2">📖 Como jogar</p>
+            <div className="rounded-3xl bg-blue-500/10 border border-blue-500/20 p-4 text-sm text-white/70 space-y-1">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.15em] text-blue-300">Como operar</p>
               <p>• Escolha 1 bloco por andar (evite a bomba)</p>
               <p>• Cada andar correto aumenta o multiplicador</p>
               <p>• Saque a qualquer momento para garantir lucro</p>

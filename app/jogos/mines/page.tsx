@@ -127,17 +127,17 @@ export default function MinesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 text-white">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.18),transparent_35%),#06090f] text-white">
       {/* Header */}
-      <div className="border-b border-white/10 bg-black/20 backdrop-blur sticky top-0 z-40">
+      <div className="sticky top-0 z-40 border-b border-white/10 bg-black/30 backdrop-blur">
         <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button onClick={() => router.push("/")} className="text-white/70 hover:text-white transition">
               ← Voltar
             </button>
             <div>
-              <h1 className="text-xl font-bold">💣 Mines</h1>
-              <p className="text-sm text-white/60">BetClean Original</p>
+              <h1 className="text-xl font-bold tracking-wide">Mines</h1>
+              <p className="text-sm text-white/60">BetClean Original • Strategy</p>
             </div>
           </div>
           <div className="text-right">
@@ -152,30 +152,34 @@ export default function MinesPage() {
       <main className="mx-auto max-w-5xl px-4 py-8">
         {/* Resultado Banner */}
         {resultado && (
-          <div className={`mb-6 rounded-2xl p-4 text-center text-xl font-bold ${
+          <div className={`mb-6 rounded-2xl p-4 text-center text-lg font-bold ${
             resultado === "win"
               ? "bg-emerald-500/20 border border-emerald-400/40 text-emerald-300"
               : "bg-red-500/20 border border-red-400/40 text-red-300"
           }`}>
             {resultado === "win"
-              ? `🎉 Você ganhou +${formatBRL(ganhoAtual)}!`
-              : "💥 Bomba! Você perdeu esta rodada."}
+              ? `Lucro confirmado: +${formatBRL(ganhoAtual)}`
+              : "Round encerrado sem retorno."}
           </div>
         )}
 
         <div className="grid lg:grid-cols-[1fr_300px] gap-6">
           {/* Grid de Células */}
-          <div className="rounded-2xl border border-white/10 bg-black/40 p-4">
+          <div className="rounded-3xl border border-amber-400/15 bg-black/40 p-4 shadow-[0_0_24px_rgba(245,158,11,0.08)]">
+            <div className="mb-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-xs uppercase tracking-[0.2em] text-white/55">
+              <span>Field</span>
+              <span>RTP dinâmico</span>
+            </div>
             <div className="grid grid-cols-5 gap-2">
               {cells.map((cell, idx) => (
                 <button
                   key={idx}
                   onClick={() => revelarCelula(idx)}
                   disabled={!jogando || encerrado || cell !== "hidden"}
-                  className={`aspect-square rounded-xl border-2 flex items-center justify-center text-2xl font-bold transition-all duration-150 select-none ${getCellStyle(cell, idx)}`}
+                  className={`aspect-square rounded-xl border-2 flex items-center justify-center text-lg font-black tracking-[0.18em] transition-all duration-150 select-none ${getCellStyle(cell, idx)}`}
                 >
-                  {cell === "gem" && "💎"}
-                  {cell === "bomb" && "💣"}
+                  {cell === "gem" && "GEM"}
+                  {cell === "bomb" && "MINE"}
                 </button>
               ))}
             </div>
@@ -185,8 +189,8 @@ export default function MinesPage() {
           <div className="space-y-4">
             {/* Stats ao vivo */}
             {jogando && (
-              <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-4">
-                <p className="text-sm text-emerald-300 mb-1">💰 Ganho atual</p>
+              <div className="rounded-3xl border border-emerald-400/20 bg-emerald-400/10 p-4">
+                <p className="text-xs uppercase tracking-[0.2em] text-emerald-300 mb-1">Retorno potencial</p>
                 <p className="text-3xl font-bold text-emerald-300">
                   {formatBRL(ganhoAtual)}
                 </p>
@@ -200,8 +204,8 @@ export default function MinesPage() {
             )}
 
             {/* Config */}
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-4">
-              <h3 className="font-bold">Configurações</h3>
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-4 space-y-4">
+              <h3 className="font-bold uppercase tracking-[0.15em] text-sm text-white/70">Configurações</h3>
 
               {/* Aposta */}
               <div>
@@ -218,7 +222,7 @@ export default function MinesPage() {
                           : "bg-white/10 text-white hover:bg-white/20 disabled:opacity-50"
                       }`}
                     >
-                      {v.toLocaleString()}
+                      {formatBRL(v)}
                     </button>
                   ))}
                 </div>
@@ -253,7 +257,7 @@ export default function MinesPage() {
                   disabled={saldo < aposta}
                   className="w-full rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 py-4 font-bold text-black text-lg transition hover:scale-[1.02] disabled:opacity-50"
                 >
-                  {encerrado ? "🔄 Jogar Novamente" : "🚀 Iniciar Jogo"}
+                  {encerrado ? "Nova rodada" : "Iniciar sessão"}
                 </button>
               ) : (
                 <button
@@ -261,17 +265,17 @@ export default function MinesPage() {
                   disabled={reveladas.size === 0}
                   className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 py-4 font-bold text-white text-lg transition hover:scale-[1.02] disabled:opacity-50"
                 >
-                  💰 Cash Out ({ganhoAtual.toLocaleString()})
+                  Encerrar e sacar ({formatBRL(ganhoAtual)})
                 </button>
               )}
             </div>
 
             {/* Info */}
-            <div className="rounded-2xl bg-blue-500/10 border border-blue-500/20 p-4 text-sm text-white/70 space-y-1">
-              <p className="font-semibold text-blue-300 mb-2">📖 Como jogar</p>
+            <div className="rounded-3xl bg-blue-500/10 border border-blue-500/20 p-4 text-sm text-white/70 space-y-1">
+              <p className="font-semibold text-blue-300 mb-2 uppercase tracking-[0.15em] text-xs">Como operar</p>
               <p>• Cada gem revelada aumenta o multiplicador</p>
               <p>• Mais bombas = maior multiplicador</p>
-              <p>• Clique em <strong>Cash Out</strong> para garantir seus ganhos</p>
+              <p>• Encerre a sessão para garantir o valor acumulado</p>
               <p>• Se tocar uma bomba, perde tudo</p>
             </div>
           </div>
