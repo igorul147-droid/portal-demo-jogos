@@ -67,7 +67,7 @@ function evaluateGrid(grid: string[][], stake: number, bonusBoost: boolean) {
 export default function FortuneSeriesPage({
   title,
   shortTitle,
-  mascot,
+  mascot: _mascot,
   headerAccent,
   stageAccent,
   controlAccent,
@@ -102,6 +102,29 @@ export default function FortuneSeriesPage({
   }, [router]);
 
   const bonusRunning = freeSpins > 0;
+  const mascotMonogram = useMemo(() => {
+    const parts = shortTitle
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() ?? "")
+      .join("");
+
+    return parts || "GX";
+  }, [shortTitle]);
+
+  const bonusMark = useMemo(() => {
+    return bonusName
+      .replace(/[^a-zA-Z0-9 ]/g, "")
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() ?? "")
+      .join("") || "BN";
+  }, [bonusName]);
+
   const statusText = useMemo(() => {
     if (spinning) return "Spin em execução";
     if (bonusRunning) return `${freeSpins} free spins restantes`;
@@ -248,7 +271,9 @@ export default function FortuneSeriesPage({
 
               <div className="mb-3 flex justify-center">
                 <div className="rounded-[28px] border border-white/15 bg-[linear-gradient(180deg,rgba(255,255,255,0.1),rgba(255,255,255,0.02))] px-5 py-3 text-center shadow-[0_12px_30px_rgba(0,0,0,0.25)]">
-                  <div className="text-7xl leading-none drop-shadow-[0_12px_30px_rgba(0,0,0,0.25)]">{mascot}</div>
+                  <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full border border-amber-200/40 bg-[radial-gradient(circle_at_top,_rgba(250,204,21,0.32),_rgba(146,64,14,0.4)_65%,_rgba(51,65,85,0.45)_100%)] text-3xl font-black tracking-[0.08em] text-amber-50 shadow-[0_14px_30px_rgba(0,0,0,0.35)]">
+                    {mascotMonogram}
+                  </div>
                 </div>
               </div>
 
@@ -270,7 +295,13 @@ export default function FortuneSeriesPage({
                         >
                           <div className={`absolute inset-x-2 top-0 h-1 rounded-b-full bg-gradient-to-r ${symbolBg} opacity-90`} />
                           <div>
-                            <div className="text-5xl leading-none">{symbol === "BONUS" ? mascot : symbol === "WILD" ? "✨" : symbol}</div>
+                            <div className="text-3xl font-black uppercase tracking-[0.08em] text-amber-50">
+                              {symbol === "BONUS"
+                                ? bonusMark
+                                : symbol === "WILD"
+                                  ? "WD"
+                                  : symbol.slice(0, 2)}
+                            </div>
                             <div className="mt-2 text-[10px] font-bold uppercase tracking-[0.22em] text-white/60">
                               {labels[symbol] ?? symbol}
                             </div>
