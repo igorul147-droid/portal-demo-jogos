@@ -26,6 +26,8 @@ type Particle = {
   duration: string;
 };
 
+const BET_OPTIONS = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 8, 10, 15];
+
 function symbolToken(symbol: string, bonusMark: string) {
   if (symbol === "BONUS") return bonusMark;
   if (symbol === "WILD") return "WD";
@@ -132,7 +134,7 @@ export default function FortuneSeriesPage({
   const particleIdRef = useRef(0);
 
   const [grid, setGrid] = useState<string[][]>(() => makeGrid(symbols));
-  const [stake, setStake] = useState(50);
+  const [stake, setStake] = useState(0.5);
   const [spinning, setSpinning] = useState(false);
   const [message, setMessage] = useState(`Mesa pronta. ${bonusName} ON.`);
   const [lastPrize, setLastPrize] = useState(0);
@@ -388,7 +390,7 @@ export default function FortuneSeriesPage({
             </div>
 
             <div className="mb-4 flex items-center justify-center gap-2">
-              {[20, 40, 50, 80, 100].map((amount) => (
+              {BET_OPTIONS.map((amount) => (
                 <button
                   key={amount}
                   onClick={() => setStake(amount)}
