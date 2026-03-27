@@ -415,8 +415,6 @@ export default function FortuneSeriesPage({
   const [message, setMessage] = useState(`Mesa pronta. ${bonusName} ON.`);
   const [lastPrize, setLastPrize] = useState(0);
   const [freeSpins, setFreeSpins] = useState(0);
-  const [bonusEnabled, setBonusEnabled] = useState(true);
-  const [audioEnabled, setAudioEnabled] = useState(true);
   const [winningLines, setWinningLines] = useState<number[]>([]);
   const [particles, setParticles] = useState<Particle[]>([]);
   const [rounds, setRounds] = useState(0);
@@ -538,7 +536,6 @@ export default function FortuneSeriesPage({
       secondary: familyAudio.waveSecondary,
     }
   ) {
-    if (!audioEnabled) return;
     const context = getAudioContext();
     if (!context) return;
 
@@ -611,7 +608,7 @@ export default function FortuneSeriesPage({
     });
 
     window.setTimeout(() => {
-      const evaluation = evaluateGrid(result, stake, bonusEnabled || bonusRunning);
+      const evaluation = evaluateGrid(result, stake, true);
       const cost = bonusRunning ? 0 : stake;
       const existingFreeSpins = freeSpins;
 
@@ -793,17 +790,16 @@ export default function FortuneSeriesPage({
 
             <div className="flex items-center justify-center gap-4">
               <button
-                onClick={() => setAudioEnabled((current) => !current)}
-                className={`h-12 w-12 rounded-full border border-yellow-300/30 text-xs font-bold ${audioEnabled ? "bg-yellow-300/15 text-yellow-100" : "bg-black/20 text-white/60"}`}
-              >
-                {audioEnabled ? "AUDIO" : "MUTE"}
-              </button>
-              <button
-                onClick={() => setBonusEnabled((current) => !current)}
+                onClick={() => {
+                  const currentIndex = BET_OPTIONS.indexOf(stake);
+                  if (currentIndex > 0) {
+                    setStake(BET_OPTIONS[currentIndex - 1]);
+                  }
+                }}
                 disabled={spinning || bonusRunning}
-                className={`h-12 w-12 rounded-full border border-yellow-300/30 text-xs font-bold ${bonusEnabled ? "bg-emerald-400/15 text-emerald-200" : "bg-black/20 text-white/60"} disabled:opacity-50`}
+                className="h-14 w-14 rounded-full border-2 border-yellow-300/50 bg-yellow-400/10 text-2xl font-bold text-yellow-300 hover:bg-yellow-400/20 disabled:opacity-50"
               >
-                BONUS
+                −
               </button>
               <button
                 onClick={spin}
@@ -814,16 +810,16 @@ export default function FortuneSeriesPage({
                 {spinning ? "..." : "SPIN"}
               </button>
               <button
-                onClick={() => document.documentElement.requestFullscreen?.()}
-                className="h-12 w-12 rounded-full border border-yellow-300/30 bg-black/20 text-xs font-bold text-white/70"
+                onClick={() => {
+                  const currentIndex = BET_OPTIONS.indexOf(stake);
+                  if (currentIndex < BET_OPTIONS.length - 1) {
+                    setStake(BET_OPTIONS[currentIndex + 1]);
+                  }
+                }}
+                disabled={spinning || bonusRunning || saldo < BET_OPTIONS[Math.min(BET_OPTIONS.indexOf(stake) + 1, BET_OPTIONS.length - 1)]}
+                className="h-14 w-14 rounded-full border-2 border-yellow-300/50 bg-yellow-400/10 text-2xl font-bold text-yellow-300 hover:bg-yellow-400/20 disabled:opacity-50"
               >
-                FULL
-              </button>
-              <button
-                onClick={() => router.push("/jogos/catalogo")}
-                className="h-12 w-12 rounded-full border border-yellow-300/30 bg-black/20 text-xs font-bold text-white/70"
-              >
-                HOME
+                +
               </button>
             </div>
 
