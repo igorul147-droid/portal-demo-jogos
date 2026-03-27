@@ -29,6 +29,115 @@ type Particle = {
 const BET_OPTIONS = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 8, 10, 15];
 
 type IconTheme = "coin" | "gem" | "crown" | "lucky" | "animal" | "weapon" | "card" | "special";
+type GameFamily = "fortune" | "wild" | "myth" | "candy" | "original" | "classic";
+
+const FAMILY_STYLE: Record<
+  GameFamily,
+  {
+    tag: string;
+    baseHue: number;
+    altHue: number;
+    patternVariant: number;
+    shapeVariant: number;
+    spinTick: number;
+    spinStart: number;
+    spinGap: number;
+    spinSettle: number;
+    scaleLeft: number;
+    scaleRight: number;
+  }
+> = {
+  fortune: {
+    tag: "Fortune Series",
+    baseHue: 38,
+    altHue: 8,
+    patternVariant: 2,
+    shapeVariant: 2,
+    spinTick: 70,
+    spinStart: 520,
+    spinGap: 320,
+    spinSettle: 340,
+    scaleLeft: 3,
+    scaleRight: 4,
+  },
+  wild: {
+    tag: "Wild Series",
+    baseHue: 24,
+    altHue: 44,
+    patternVariant: 0,
+    shapeVariant: 1,
+    spinTick: 68,
+    spinStart: 500,
+    spinGap: 280,
+    spinSettle: 330,
+    scaleLeft: 2,
+    scaleRight: 4,
+  },
+  myth: {
+    tag: "Mythic Series",
+    baseHue: 256,
+    altHue: 208,
+    patternVariant: 3,
+    shapeVariant: 0,
+    spinTick: 74,
+    spinStart: 560,
+    spinGap: 310,
+    spinSettle: 360,
+    scaleLeft: 3,
+    scaleRight: 5,
+  },
+  candy: {
+    tag: "Candy Series",
+    baseHue: 320,
+    altHue: 190,
+    patternVariant: 1,
+    shapeVariant: 3,
+    spinTick: 62,
+    spinStart: 470,
+    spinGap: 250,
+    spinSettle: 300,
+    scaleLeft: 2,
+    scaleRight: 3,
+  },
+  original: {
+    tag: "BetClean Originals",
+    baseHue: 162,
+    altHue: 204,
+    patternVariant: 0,
+    shapeVariant: 1,
+    spinTick: 67,
+    spinStart: 500,
+    spinGap: 270,
+    spinSettle: 320,
+    scaleLeft: 2,
+    scaleRight: 3,
+  },
+  classic: {
+    tag: "Classic Slots",
+    baseHue: 224,
+    altHue: 270,
+    patternVariant: 3,
+    shapeVariant: 0,
+    spinTick: 72,
+    spinStart: 540,
+    spinGap: 300,
+    spinSettle: 350,
+    scaleLeft: 3,
+    scaleRight: 4,
+  },
+};
+
+function detectFamily(title: string, shortTitle: string, provider: string, bonusName: string, labels: Record<string, string>): GameFamily {
+  const text = `${title} ${shortTitle} ${provider} ${bonusName} ${Object.values(labels).join(" ")}`.toUpperCase();
+
+  if (/(SWEET|CANDY)/.test(text)) return "candy";
+  if (/(WILD|WEST|WOLF|BANDITO|BASS|OUTLAW|COWBOY)/.test(text)) return "wild";
+  if (/(OLYMPUS|STARLIGHT|BOOK|JOKER|MAHJONG|DRAGON|GANESHA|MYTH|GATE)/.test(text)) return "myth";
+  if (/(TURBO|NEON|MINES|TOWER|HI-LO|ORIGINAL|BETCLEAN)/.test(text)) return "original";
+  if (/(FORTUNE|TIGER|RABBIT|OX|MOUSE|PIGGY|TREE|LEPRECHAUN|GEM|LUCK)/.test(text)) return "fortune";
+
+  return "classic";
+}
 
 function hashSeed(value: string) {
   let hash = 2166136261;
@@ -279,25 +388,31 @@ export default function FortuneSeriesPage({
       .join("") || "BN";
   }, [bonusName]);
 
+  const family = useMemo(
+    () => detectFamily(title, shortTitle, provider, bonusName, labels),
+    [bonusName, labels, provider, shortTitle, title]
+  );
+  const familyStyle = useMemo(() => FAMILY_STYLE[family], [family]);
+
   const identity = useMemo(() => {
     const seed = hashSeed(`${title}-${shortTitle}-${provider}`);
-    const hueA = seed % 360;
-    const hueB = (hueA + 38 + (seed % 95)) % 360;
+    const hueA = (familyStyle.baseHue + (seed % 34)) % 360;
+    const hueB = (familyStyle.altHue + (seed % 28)) % 360;
 
     return {
       seed,
       hueA,
       hueB,
-      patternVariant: seed % 4,
-      shapeVariant: seed % 4,
-      scaleLeft: 2 + (seed % 3),
-      scaleRight: 3 + (seed % 4),
-      spinTick: 66 + (seed % 16),
-      spinStart: 500 + (seed % 110),
-      spinGap: 250 + (seed % 100),
-      spinSettle: 300 + (seed % 120),
+      patternVariant: (familyStyle.patternVariant + (seed % 2)) % 4,
+      shapeVariant: (familyStyle.shapeVariant + (seed % 2)) % 4,
+      scaleLeft: familyStyle.scaleLeft + (seed % 2),
+      scaleRight: familyStyle.scaleRight + (seed % 2),
+      spinTick: familyStyle.spinTick + (seed % 8),
+      spinStart: familyStyle.spinStart + (seed % 70),
+      spinGap: familyStyle.spinGap + (seed % 50),
+      spinSettle: familyStyle.spinSettle + (seed % 60),
     };
-  }, [provider, shortTitle, title]);
+  }, [familyStyle, provider, shortTitle, title]);
 
   const heroGradientId = useMemo(() => `hero-core-${identity.seed}`, [identity.seed]);
   const mainBackground = useMemo(
@@ -474,7 +589,12 @@ export default function FortuneSeriesPage({
             <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.2),_transparent_70%)]" />
             <div className="mb-3 flex items-center justify-between text-[11px] uppercase tracking-[0.2em] text-white/55">
               <span>{shortTitle}</span>
-              <span>{statusText}</span>
+              <div className="flex items-center gap-2">
+                <span className="rounded-full border border-white/15 bg-white/10 px-2 py-1 text-[9px] tracking-[0.18em] text-white/75">
+                  {familyStyle.tag}
+                </span>
+                <span>{statusText}</span>
+              </div>
             </div>
 
             <div className="relative rounded-[28px] border border-fuchsia-300/20 p-2 shadow-[0_12px_30px_rgba(0,0,0,0.25)]" style={{ backgroundImage: reelBackground }}>
