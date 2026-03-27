@@ -45,7 +45,6 @@ const jogos: CatalogGame[] = [
   { nome: "Joker's Jewels", provider: "PP", rota: "/jogos/jokers-jewels", capa: "🃏", subtitle: "Classic 5-reel", badge: "Premium", accentClass: "from-violet-300/20 via-fuchsia-500/20 to-slate-950", glowClass: "shadow-[0_0_30px_rgba(192,132,252,0.18)]" },
   // BetClean Originais
   { nome: "Mines", provider: "POPOK", rota: "/jogos/mines", capa: "💣", subtitle: "Tactical grid", badge: "Original", accentClass: "from-emerald-300/20 via-cyan-500/20 to-slate-950", glowClass: "shadow-[0_0_30px_rgba(16,185,129,0.18)]" },
-  { nome: "Orbit Wheel", provider: "POPOK", rota: "/jogos/orbit-wheel", capa: "🎡", subtitle: "Live wheel spin", badge: "Original", accentClass: "from-amber-300/20 via-emerald-500/20 to-slate-950", glowClass: "shadow-[0_0_30px_rgba(251,191,36,0.18)]" },
   { nome: "Tower", provider: "G759", rota: "/jogos/tower", capa: "⬆️", subtitle: "Step-up volatility", badge: "Original", accentClass: "from-sky-300/20 via-indigo-500/20 to-slate-950", glowClass: "shadow-[0_0_30px_rgba(96,165,250,0.18)]" },
   { nome: "Turbo Rise", provider: "G759", rota: "/jogos/turbo-rise", capa: "✈️", subtitle: "Crash desk", badge: "Live", accentClass: "from-amber-300/20 via-orange-500/20 to-slate-950", glowClass: "shadow-[0_0_30px_rgba(251,146,60,0.18)]" },
   { nome: "Hi-Lo", provider: "Tada", rota: "/jogos/hi-lo", capa: "🃏", subtitle: "Cards & odds", badge: "Original", accentClass: "from-violet-300/20 via-pink-500/20 to-slate-950", glowClass: "shadow-[0_0_30px_rgba(168,85,247,0.18)]" },

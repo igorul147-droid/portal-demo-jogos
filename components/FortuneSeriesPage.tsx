@@ -90,6 +90,7 @@ function evaluateGrid(grid: string[][], stake: number, bonusBoost: boolean) {
   const lines: number[] = [];
   let multiplier = 0;
   const bonusCount = grid.flat().filter((item) => item === "BONUS").length;
+  let crossTriggered = false;
 
   rows.forEach((row, index) => {
     if (row[0] === row[1] && row[1] === row[2]) {
@@ -97,6 +98,18 @@ function evaluateGrid(grid: string[][], stake: number, bonusBoost: boolean) {
       lines.push(index);
     }
   });
+
+  const center = grid[1][1];
+  if (
+    center === grid[0][1] &&
+    center === grid[2][1] &&
+    center === grid[1][0] &&
+    center === grid[1][2]
+  ) {
+    crossTriggered = true;
+    multiplier += center === "WILD" ? 22 : center === "BONUS" ? 18 : 12;
+    lines.push(0, 1, 2);
+  }
 
   if (bonusCount >= 3) {
     multiplier += bonusBoost ? 18 : 10;
@@ -108,10 +121,11 @@ function evaluateGrid(grid: string[][], stake: number, bonusBoost: boolean) {
 
   return {
     prize: stake * multiplier,
-    lines,
+    lines: Array.from(new Set(lines)),
     bonusCount,
     bonusTriggered: bonusCount >= 3,
     multiplier,
+    crossTriggered,
   };
 }
 
@@ -274,11 +288,13 @@ export default function FortuneSeriesPage({
       setMessage(
         evaluation.bonusTriggered
           ? `${bonusName} ativado: +5 free spins e ${formatBRL(evaluation.prize)}.`
-          : evaluation.prize > 0
-            ? `Rodada liquidada com ${formatBRL(evaluation.prize)}.`
-            : bonusRunning
-              ? "Bonus round sem pagamento nesta rodada."
-              : "Sem prêmio nesta rodada."
+          : evaluation.crossTriggered
+            ? `Cruz perpendicular confirmada. Pagamento de ${formatBRL(evaluation.prize)}.`
+            : evaluation.prize > 0
+              ? `Fileira de 3 confirmada com ${formatBRL(evaluation.prize)}.`
+              : bonusRunning
+                ? "Bonus round sem pagamento nesta rodada."
+                : "Sem prêmio nesta rodada."
       );
 
       setSpinning(false);

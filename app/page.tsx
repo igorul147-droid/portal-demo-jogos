@@ -35,12 +35,12 @@ const jogos = [
     botao: "Jogar",
   },
   {
-    titulo: "Orbit Wheel",
-    categoria: "Roleta",
+    titulo: "Mines",
+    categoria: "Slot",
     descricao:
-      "Uma roleta conceitual com interface limpa, giro instantâneo e sistema de premiação equilibrado.",
-    rota: "/jogos/orbit-wheel",
-    gradiente: "from-emerald-400/30 via-teal-500/20 to-sky-500/20",
+      "Rodadas em grade 3x3 com leitura de fileiras e cruz perpendicular no estilo cassino.",
+    rota: "/jogos/mines",
+    gradiente: "from-emerald-400/30 via-teal-500/20 to-cyan-500/20",
     botao: "Jogar",
   },
 ];
@@ -281,14 +281,6 @@ export default function Home() {
               descricao="Assista o avião decolar e saque antes do crash"
               rota="/jogos/turbo-rise"
               gradiente="from-blue-400/30 via-cyan-500/20 to-purple-500/20"
-              botao="Jogar Agora"
-            />
-            <GameCard
-              titulo="Orbit Wheel"
-              categoria="Roleta"
-              descricao="Roleta com multiplicadores e giro instantâneo"
-              rota="/jogos/orbit-wheel"
-              gradiente="from-emerald-400/30 via-teal-500/20 to-sky-500/20"
               botao="Jogar Agora"
             />
           </div>
