@@ -30,6 +30,16 @@ const BET_OPTIONS = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 8, 10, 15];
 
 type IconTheme = "coin" | "gem" | "crown" | "lucky" | "animal" | "weapon" | "card" | "special";
 type GameFamily = "fortune" | "wild" | "myth" | "candy" | "original" | "classic";
+type ToneWave = OscillatorType;
+
+type AudioProfile = {
+  wavePrimary: ToneWave;
+  waveSecondary: ToneWave;
+  spinStart: number[];
+  win: number[];
+  bonus: number[];
+  lose: number[];
+};
 
 const FAMILY_STYLE: Record<
   GameFamily,
@@ -124,6 +134,57 @@ const FAMILY_STYLE: Record<
     spinSettle: 350,
     scaleLeft: 3,
     scaleRight: 4,
+  },
+};
+
+const FAMILY_AUDIO: Record<GameFamily, AudioProfile> = {
+  fortune: {
+    wavePrimary: "triangle",
+    waveSecondary: "sine",
+    spinStart: [330, 430, 540],
+    win: [480, 680, 920],
+    bonus: [700, 920, 1180, 1450],
+    lose: [190, 165],
+  },
+  wild: {
+    wavePrimary: "sawtooth",
+    waveSecondary: "triangle",
+    spinStart: [280, 360, 440],
+    win: [420, 560, 760],
+    bonus: [620, 810, 1030, 1260],
+    lose: [170, 140],
+  },
+  myth: {
+    wavePrimary: "sine",
+    waveSecondary: "triangle",
+    spinStart: [350, 470, 610],
+    win: [500, 730, 980],
+    bonus: [760, 980, 1220, 1520],
+    lose: [210, 180],
+  },
+  candy: {
+    wavePrimary: "triangle",
+    waveSecondary: "square",
+    spinStart: [390, 520, 690],
+    win: [560, 760, 990],
+    bonus: [820, 1050, 1320, 1660],
+    lose: [220, 190],
+  },
+  original: {
+    wavePrimary: "square",
+    waveSecondary: "triangle",
+    spinStart: [300, 390, 510],
+    win: [430, 620, 830],
+    bonus: [650, 850, 1090, 1350],
+    lose: [175, 150],
+  },
+  classic: {
+    wavePrimary: "triangle",
+    waveSecondary: "sine",
+    spinStart: [320, 420, 530],
+    win: [460, 660, 880],
+    bonus: [690, 900, 1120, 1390],
+    lose: [180, 155],
   },
 };
 
@@ -393,6 +454,7 @@ export default function FortuneSeriesPage({
     [bonusName, labels, provider, shortTitle, title]
   );
   const familyStyle = useMemo(() => FAMILY_STYLE[family], [family]);
+  const familyAudio = useMemo(() => FAMILY_AUDIO[family], [family]);
 
   const identity = useMemo(() => {
     const seed = hashSeed(`${title}-${shortTitle}-${provider}`);
@@ -452,7 +514,14 @@ export default function FortuneSeriesPage({
     return audioContextRef.current;
   }
 
-  function playToneSequence(frequencies: number[], length = 0.08) {
+  function playToneSequence(
+    frequencies: number[],
+    length = 0.08,
+    waves: { primary: ToneWave; secondary: ToneWave } = {
+      primary: familyAudio.wavePrimary,
+      secondary: familyAudio.waveSecondary,
+    }
+  ) {
     if (!audioEnabled) return;
     const context = getAudioContext();
     if (!context) return;
@@ -461,7 +530,7 @@ export default function FortuneSeriesPage({
     frequencies.forEach((frequency, index) => {
       const oscillator = context.createOscillator();
       const gain = context.createGain();
-      oscillator.type = index === 0 ? "triangle" : "sine";
+      oscillator.type = index === 0 ? waves.primary : waves.secondary;
       oscillator.frequency.setValueAtTime(frequency, start + index * length * 0.9);
       gain.gain.setValueAtTime(0.0001, start + index * length * 0.9);
       gain.gain.exponentialRampToValueAtTime(0.04, start + index * length * 0.9 + 0.01);
@@ -494,7 +563,7 @@ export default function FortuneSeriesPage({
     setRowSpinning([true, true, true]);
     setWinningLines([]);
     setMessage(bonusRunning ? "Roleta em bonus: linhas em movimento..." : "Roleta em execução, linha por linha...");
-    playToneSequence([320, 420, 520], 0.05);
+    playToneSequence(familyAudio.spinStart, 0.05);
 
     const result = makeGrid(symbols);
     const intervals = [0, 1, 2].map((rowIndex) =>
@@ -540,12 +609,15 @@ export default function FortuneSeriesPage({
       if (evaluation.bonusTriggered) {
         setFreeSpins((current) => current + 5);
         burstParticles(18);
-        playToneSequence([660, 880, 1100, 1320], 0.08);
+        playToneSequence(familyAudio.bonus, 0.08, {
+          primary: familyAudio.waveSecondary,
+          secondary: familyAudio.wavePrimary,
+        });
       } else if (evaluation.prize > 0) {
         burstParticles(10);
-        playToneSequence([460, 680, 860], 0.07);
+        playToneSequence(familyAudio.win, 0.07);
       } else {
-        playToneSequence([180, 160], 0.05);
+        playToneSequence(familyAudio.lose, 0.05);
       }
 
       if (existingFreeSpins > 0) {
