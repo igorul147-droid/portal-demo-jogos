@@ -30,6 +30,31 @@ const BET_OPTIONS = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 8, 10, 15];
 
 type IconTheme = "coin" | "gem" | "crown" | "lucky" | "animal" | "weapon" | "card" | "special";
 
+function hashSeed(value: string) {
+  let hash = 2166136261;
+  for (let i = 0; i < value.length; i += 1) {
+    hash ^= value.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return Math.abs(hash >>> 0);
+}
+
+function pickPattern(variant: number, hueA: number, hueB: number) {
+  if (variant === 0) {
+    return `repeating-linear-gradient(135deg, hsla(${hueA},88%,74%,0.08) 0 10px, transparent 10px 20px)`;
+  }
+
+  if (variant === 1) {
+    return `radial-gradient(circle at 18% 22%, hsla(${hueA},90%,78%,0.14) 0 2px, transparent 3px), radial-gradient(circle at 72% 64%, hsla(${hueB},90%,72%,0.12) 0 2px, transparent 3px)`;
+  }
+
+  if (variant === 2) {
+    return `repeating-radial-gradient(circle at 50% 50%, hsla(${hueA},80%,70%,0.1) 0 8px, transparent 8px 16px)`;
+  }
+
+  return `linear-gradient(90deg, hsla(${hueA},80%,74%,0.08) 1px, transparent 1px), linear-gradient(180deg, hsla(${hueB},80%,72%,0.08) 1px, transparent 1px)`;
+}
+
 function symbolToken(symbol: string, bonusMark: string) {
   if (symbol === "BONUS") return bonusMark;
   if (symbol === "WILD") return "WD";
@@ -90,18 +115,18 @@ function ThemeMark({ theme }: { theme: IconTheme }) {
   }
 }
 
-function HeroSeal({ monogram }: { monogram: string }) {
+function HeroSeal({ monogram, hueA, hueB, gradientId }: { monogram: string; hueA: number; hueB: number; gradientId: string }) {
   return (
     <svg viewBox="0 0 120 120" className="h-24 w-24 drop-shadow-[0_10px_22px_rgba(0,0,0,0.4)]" aria-hidden>
       <defs>
-        <radialGradient id="hero-core" cx="50%" cy="35%" r="65%">
-          <stop offset="0%" stopColor="rgba(254,243,199,1)" />
-          <stop offset="55%" stopColor="rgba(245,158,11,0.9)" />
-          <stop offset="100%" stopColor="rgba(120,53,15,0.95)" />
+        <radialGradient id={gradientId} cx="50%" cy="35%" r="65%">
+          <stop offset="0%" stopColor={`hsla(${hueA},95%,90%,1)`} />
+          <stop offset="55%" stopColor={`hsla(${hueA},90%,58%,0.95)`} />
+          <stop offset="100%" stopColor={`hsla(${hueB},88%,30%,0.96)`} />
         </radialGradient>
       </defs>
-      <circle cx="60" cy="60" r="54" fill="rgba(15,23,42,0.55)" stroke="rgba(253,224,71,0.45)" strokeWidth="2" />
-      <circle cx="60" cy="60" r="44" fill="url(#hero-core)" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" />
+      <circle cx="60" cy="60" r="54" fill="rgba(15,23,42,0.55)" stroke={`hsla(${hueA},92%,74%,0.5)`} strokeWidth="2" />
+      <circle cx="60" cy="60" r="44" fill={`url(#${gradientId})`} stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" />
       <path d="M26 66 C44 48, 76 48, 94 66" fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth="2" />
       <text x="60" y="68" textAnchor="middle" fill="rgba(15,23,42,0.92)" fontSize="30" fontWeight="900" letterSpacing="2">
         {monogram}
@@ -254,6 +279,48 @@ export default function FortuneSeriesPage({
       .join("") || "BN";
   }, [bonusName]);
 
+  const identity = useMemo(() => {
+    const seed = hashSeed(`${title}-${shortTitle}-${provider}`);
+    const hueA = seed % 360;
+    const hueB = (hueA + 38 + (seed % 95)) % 360;
+
+    return {
+      seed,
+      hueA,
+      hueB,
+      patternVariant: seed % 4,
+      shapeVariant: seed % 4,
+      scaleLeft: 2 + (seed % 3),
+      scaleRight: 3 + (seed % 4),
+      spinTick: 66 + (seed % 16),
+      spinStart: 500 + (seed % 110),
+      spinGap: 250 + (seed % 100),
+      spinSettle: 300 + (seed % 120),
+    };
+  }, [provider, shortTitle, title]);
+
+  const heroGradientId = useMemo(() => `hero-core-${identity.seed}`, [identity.seed]);
+  const mainBackground = useMemo(
+    () => `radial-gradient(circle at 12% 8%, hsla(${identity.hueA},88%,70%,0.18), transparent 28%), radial-gradient(circle at 88% 86%, hsla(${identity.hueB},82%,62%,0.16), transparent 30%), ${headerAccent}`,
+    [headerAccent, identity.hueA, identity.hueB]
+  );
+  const reelBackground = useMemo(
+    () => `linear-gradient(180deg, hsla(${identity.hueA},58%,24%,0.94) 0%, hsla(${identity.hueB},62%,16%,0.96) 100%)`,
+    [identity.hueA, identity.hueB]
+  );
+  const reelPattern = useMemo(
+    () => pickPattern(identity.patternVariant, identity.hueA, identity.hueB),
+    [identity.hueA, identity.hueB, identity.patternVariant]
+  );
+  const spinButtonBackground = useMemo(
+    () => `linear-gradient(180deg, hsla(${identity.hueA},72%,48%,1) 0%, hsla(${identity.hueB},76%,34%,1) 100%)`,
+    [identity.hueA, identity.hueB]
+  );
+  const cellShapeClass = useMemo(
+    () => ["rounded-[22px]", "rounded-[14px]", "rounded-[28px]", "rounded-[10px]"][identity.shapeVariant],
+    [identity.shapeVariant]
+  );
+
   const statusText = useMemo(() => {
     if (spinning) return "Spin em execução";
     if (bonusRunning) return `${freeSpins} free spins restantes`;
@@ -322,7 +389,7 @@ export default function FortuneSeriesPage({
           next[rowIndex] = makeRow(symbols);
           return next;
         });
-      }, 75 + rowIndex * 10)
+      }, identity.spinTick + rowIndex * 11)
     );
 
     [0, 1, 2].forEach((rowIndex) => {
@@ -338,7 +405,7 @@ export default function FortuneSeriesPage({
           next[rowIndex] = false;
           return next;
         });
-      }, 550 + rowIndex * 350);
+      }, identity.spinStart + rowIndex * identity.spinGap);
     });
 
     window.setTimeout(() => {
@@ -383,11 +450,11 @@ export default function FortuneSeriesPage({
       );
 
       setSpinning(false);
-    }, 1650);
+    }, identity.spinStart + identity.spinGap * 2 + identity.spinSettle);
   }
 
   return (
-    <main className={`min-h-screen bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_20%),${headerAccent}] px-2 py-3 text-white sm:px-4`}>
+    <main className="min-h-screen px-2 py-3 text-white sm:px-4" style={{ backgroundImage: mainBackground }}>
       <div className="mx-auto max-w-md">
         <div className="overflow-hidden rounded-[34px] border border-white/10 bg-black/25 shadow-[0_30px_80px_rgba(0,0,0,0.45)] backdrop-blur-sm">
           <header className="flex items-center justify-between px-3 py-2 text-sm text-white/85">
@@ -410,7 +477,14 @@ export default function FortuneSeriesPage({
               <span>{statusText}</span>
             </div>
 
-            <div className="relative rounded-[28px] border border-fuchsia-300/20 bg-[linear-gradient(180deg,rgba(80,23,122,0.92)_0%,rgba(28,19,96,0.94)_100%)] p-2 shadow-[0_12px_30px_rgba(0,0,0,0.25)]">
+            <div className="relative rounded-[28px] border border-fuchsia-300/20 p-2 shadow-[0_12px_30px_rgba(0,0,0,0.25)]" style={{ backgroundImage: reelBackground }}>
+              <div
+                className="pointer-events-none absolute inset-1 rounded-[24px] opacity-70"
+                style={{
+                  backgroundImage: reelPattern,
+                  backgroundSize: identity.patternVariant === 3 ? "14px 14px" : "auto",
+                }}
+              />
               <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[28px]">
                 {particles.map((particle) => (
                   <span
@@ -424,7 +498,7 @@ export default function FortuneSeriesPage({
               <div className="mb-3 flex justify-center">
                 <div className="rounded-[28px] border border-white/15 bg-[linear-gradient(180deg,rgba(255,255,255,0.1),rgba(255,255,255,0.02))] px-5 py-3 text-center shadow-[0_12px_30px_rgba(0,0,0,0.25)]">
                   <div className="mx-auto flex h-24 w-24 items-center justify-center">
-                    <HeroSeal monogram={mascotMonogram} />
+                    <HeroSeal monogram={mascotMonogram} hueA={identity.hueA} hueB={identity.hueB} gradientId={heroGradientId} />
                   </div>
                 </div>
               </div>
@@ -432,7 +506,7 @@ export default function FortuneSeriesPage({
               <div className="grid grid-cols-[0.12fr_1fr_0.12fr] items-stretch gap-2">
                 <div className="flex flex-col items-center justify-around rounded-[22px] border border-fuchsia-300/15 bg-fuchsia-500/10 py-3 text-lg font-bold text-fuchsia-200/55">
                   {Array.from({ length: 5 }).map((_, index) => (
-                    <span key={index}>{(index + 1) * 2}</span>
+                    <span key={index}>{(index + 1) * identity.scaleLeft}</span>
                   ))}
                 </div>
 
@@ -443,7 +517,7 @@ export default function FortuneSeriesPage({
                       return (
                         <div
                           key={`${rowIndex}-${colIndex}`}
-                          className={`relative flex h-28 items-center justify-center rounded-[22px] border border-white/10 bg-[linear-gradient(180deg,rgba(30,41,120,0.96)_0%,rgba(44,25,120,0.96)_100%)] text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all ${highlighted ? "animate-bonus-flare border-yellow-300/60 shadow-[0_0_24px_rgba(250,204,21,0.35)]" : ""} ${rowSpinning[rowIndex] ? "animate-reel-flicker" : ""}`}
+                          className={`relative flex h-28 items-center justify-center ${cellShapeClass} border border-white/10 bg-[linear-gradient(180deg,rgba(30,41,120,0.96)_0%,rgba(44,25,120,0.96)_100%)] text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all ${highlighted ? "animate-bonus-flare border-yellow-300/60 shadow-[0_0_24px_rgba(250,204,21,0.35)]" : ""} ${rowSpinning[rowIndex] ? "animate-reel-flicker" : ""}`}
                         >
                           <div className={`absolute inset-x-2 top-0 h-1 rounded-b-full bg-gradient-to-r ${symbolBg} opacity-90`} />
                           <div>
@@ -462,7 +536,7 @@ export default function FortuneSeriesPage({
 
                 <div className="flex flex-col items-center justify-around rounded-[22px] border border-fuchsia-300/15 bg-fuchsia-500/10 py-3 text-lg font-bold text-fuchsia-200/55">
                   {Array.from({ length: 5 }).map((_, index) => (
-                    <span key={index}>{(index + 1) * 3}</span>
+                    <span key={index}>{(index + 1) * identity.scaleRight}</span>
                   ))}
                 </div>
               </div>
@@ -524,7 +598,8 @@ export default function FortuneSeriesPage({
               <button
                 onClick={spin}
                 disabled={spinning || saldo < stake}
-                className="flex h-24 w-24 items-center justify-center rounded-full border-[6px] border-yellow-200/70 bg-[linear-gradient(180deg,#38b26e_0%,#0f8f4d_100%)] text-lg font-black text-white shadow-[0_18px_40px_rgba(0,0,0,0.35)] disabled:opacity-50"
+                className="flex h-24 w-24 items-center justify-center rounded-full border-[6px] border-yellow-200/70 text-lg font-black text-white shadow-[0_18px_40px_rgba(0,0,0,0.35)] disabled:opacity-50"
+                style={{ backgroundImage: spinButtonBackground }}
               >
                 {spinning ? "..." : "SPIN"}
               </button>
