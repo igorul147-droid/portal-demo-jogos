@@ -137,6 +137,10 @@ const FAMILY_STYLE: Record<
   },
 };
 
+function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
+}
+
 const FAMILY_AUDIO: Record<GameFamily, AudioProfile> = {
   fortune: {
     wavePrimary: "triangle",
@@ -477,6 +481,18 @@ export default function FortuneSeriesPage({
   }, [familyStyle, provider, shortTitle, title]);
 
   const heroGradientId = useMemo(() => `hero-core-${identity.seed}`, [identity.seed]);
+  const audioIdentity = useMemo(() => {
+    const semitoneShift = ((identity.seed % 11) - 5) * 0.35;
+    const transpose = Math.pow(2, semitoneShift / 12);
+    const tempoFactor = 0.94 + (identity.seed % 9) * 0.015;
+    const gainBoost = 0.9 + (identity.seed % 7) * 0.035;
+
+    return {
+      transpose,
+      tempoFactor,
+      gainBoost: clamp(gainBoost, 0.82, 1.16),
+    };
+  }, [identity.seed]);
   const mainBackground = useMemo(
     () => `radial-gradient(circle at 12% 8%, hsla(${identity.hueA},88%,70%,0.18), transparent 28%), radial-gradient(circle at 88% 86%, hsla(${identity.hueB},82%,62%,0.16), transparent 30%), ${headerAccent}`,
     [headerAccent, identity.hueA, identity.hueB]
@@ -526,19 +542,21 @@ export default function FortuneSeriesPage({
     const context = getAudioContext();
     if (!context) return;
 
+    const tunedLength = length * audioIdentity.tempoFactor;
     const start = context.currentTime;
     frequencies.forEach((frequency, index) => {
       const oscillator = context.createOscillator();
       const gain = context.createGain();
       oscillator.type = index === 0 ? waves.primary : waves.secondary;
-      oscillator.frequency.setValueAtTime(frequency, start + index * length * 0.9);
-      gain.gain.setValueAtTime(0.0001, start + index * length * 0.9);
-      gain.gain.exponentialRampToValueAtTime(0.04, start + index * length * 0.9 + 0.01);
-      gain.gain.exponentialRampToValueAtTime(0.0001, start + (index + 1) * length);
+      const tunedFrequency = clamp(frequency * audioIdentity.transpose, 120, 2200);
+      oscillator.frequency.setValueAtTime(tunedFrequency, start + index * tunedLength * 0.9);
+      gain.gain.setValueAtTime(0.0001, start + index * tunedLength * 0.9);
+      gain.gain.exponentialRampToValueAtTime(0.04 * audioIdentity.gainBoost, start + index * tunedLength * 0.9 + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + (index + 1) * tunedLength);
       oscillator.connect(gain);
       gain.connect(context.destination);
-      oscillator.start(start + index * length * 0.9);
-      oscillator.stop(start + (index + 1) * length + 0.03);
+      oscillator.start(start + index * tunedLength * 0.9);
+      oscillator.stop(start + (index + 1) * tunedLength + 0.03);
     });
   }
 
