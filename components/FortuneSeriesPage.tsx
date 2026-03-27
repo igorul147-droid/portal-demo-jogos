@@ -28,10 +28,66 @@ type Particle = {
 
 const BET_OPTIONS = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 8, 10, 15];
 
+type IconTheme = "coin" | "gem" | "crown" | "lucky" | "animal" | "weapon" | "card" | "special";
+
 function symbolToken(symbol: string, bonusMark: string) {
   if (symbol === "BONUS") return bonusMark;
   if (symbol === "WILD") return "WD";
   return symbol.slice(0, 2).toUpperCase();
+}
+
+function detectTheme(symbol: string, label?: string): IconTheme {
+  const value = `${symbol} ${label ?? ""}`.toUpperCase();
+
+  if (symbol === "BONUS" || symbol === "WILD") return "special";
+  if (/(COIN|VAULT|GOLD|CHEST|POT|FORTUNE)/.test(value)) return "coin";
+  if (/(GEM|RUBY|SAPPHIRE|CRYSTAL|RELIC|JADE)/.test(value)) return "gem";
+  if (/(CROWN|KING|QUEEN|ACE|JOKER|ROYAL|CARD)/.test(value)) return "card";
+  if (/(DRAGON|TIGER|WOLF|OX|RABBIT|MOUSE|GANESHA|LION|EAGLE)/.test(value)) return "animal";
+  if (/(WAND|RUNE|SIGIL|MAP|LANTERN|TREE|ARC|NOVA|STEP)/.test(value)) return "lucky";
+  if (/(REVOLVER|GUITAR|JET|ALT|WING|THRUST|ROD|FIRE|HAT)/.test(value)) return "weapon";
+  return "crown";
+}
+
+function themeGradient(theme: IconTheme, isBonus: boolean, isWild: boolean) {
+  if (isBonus) return ["rgba(250,204,21,0.96)", "rgba(180,83,9,0.96)"] as const;
+  if (isWild) return ["rgba(134,239,172,0.96)", "rgba(21,128,61,0.96)"] as const;
+
+  switch (theme) {
+    case "coin":
+      return ["rgba(253,224,71,0.95)", "rgba(217,119,6,0.95)"] as const;
+    case "gem":
+      return ["rgba(125,211,252,0.95)", "rgba(59,130,246,0.95)"] as const;
+    case "card":
+      return ["rgba(216,180,254,0.95)", "rgba(124,58,237,0.95)"] as const;
+    case "animal":
+      return ["rgba(251,146,60,0.95)", "rgba(239,68,68,0.95)"] as const;
+    case "lucky":
+      return ["rgba(110,231,183,0.95)", "rgba(16,185,129,0.95)"] as const;
+    case "weapon":
+      return ["rgba(148,163,184,0.95)", "rgba(71,85,105,0.95)"] as const;
+    default:
+      return ["rgba(196,181,253,0.95)", "rgba(99,102,241,0.95)"] as const;
+  }
+}
+
+function ThemeMark({ theme }: { theme: IconTheme }) {
+  switch (theme) {
+    case "coin":
+      return <circle cx="48" cy="48" r="14" fill="rgba(255,255,255,0.22)" />;
+    case "gem":
+      return <polygon points="48,24 66,42 48,72 30,42" fill="rgba(255,255,255,0.22)" />;
+    case "card":
+      return <rect x="34" y="28" width="28" height="40" rx="6" fill="rgba(255,255,255,0.2)" />;
+    case "animal":
+      return <path d="M26 60 C32 38, 64 38, 70 60 C64 70, 32 70, 26 60 Z" fill="rgba(255,255,255,0.2)" />;
+    case "lucky":
+      return <path d="M48 24 L56 40 L74 42 L60 54 L64 72 L48 63 L32 72 L36 54 L22 42 L40 40 Z" fill="rgba(255,255,255,0.2)" />;
+    case "weapon":
+      return <path d="M26 58 L70 38 L74 48 L30 68 Z" fill="rgba(255,255,255,0.2)" />;
+    default:
+      return <circle cx="48" cy="48" r="16" fill="rgba(255,255,255,0.2)" />;
+  }
 }
 
 function HeroSeal({ monogram }: { monogram: string }) {
@@ -54,20 +110,23 @@ function HeroSeal({ monogram }: { monogram: string }) {
   );
 }
 
-function ReelGlyph({ symbol, token }: { symbol: string; token: string }) {
+function ReelGlyph({ symbol, token, label }: { symbol: string; token: string; label?: string }) {
   const isBonus = symbol === "BONUS";
   const isWild = symbol === "WILD";
+  const theme = detectTheme(symbol, label);
+  const [startColor, endColor] = themeGradient(theme, isBonus, isWild);
 
   return (
     <svg viewBox="0 0 96 96" className="h-14 w-14 drop-shadow-[0_6px_14px_rgba(0,0,0,0.35)]" aria-hidden>
       <defs>
         <linearGradient id="glyph-bg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor={isBonus ? "rgba(250,204,21,0.95)" : isWild ? "rgba(134,239,172,0.95)" : "rgba(125,211,252,0.92)"} />
-          <stop offset="100%" stopColor={isBonus ? "rgba(180,83,9,0.95)" : isWild ? "rgba(22,163,74,0.95)" : "rgba(99,102,241,0.95)"} />
+          <stop offset="0%" stopColor={startColor} />
+          <stop offset="100%" stopColor={endColor} />
         </linearGradient>
       </defs>
       <rect x="10" y="10" width="76" height="76" rx="22" fill="rgba(15,23,42,0.48)" stroke="rgba(255,255,255,0.25)" />
       <rect x="17" y="17" width="62" height="62" rx="18" fill="url(#glyph-bg)" stroke="rgba(255,255,255,0.45)" strokeWidth="1.6" />
+      <ThemeMark theme={theme} />
       {isBonus && <circle cx="48" cy="30" r="6" fill="rgba(255,255,255,0.65)" />}
       {isWild && <path d="M24 64 L48 24 L72 64 Z" fill="rgba(255,255,255,0.22)" />}
       <text x="48" y="58" textAnchor="middle" fill="rgba(15,23,42,0.95)" fontSize="24" fontWeight="900" letterSpacing="1.5">
@@ -83,6 +142,10 @@ function pickRandom(symbols: string[]) {
 
 function makeGrid(symbols: string[]) {
   return Array.from({ length: 3 }, () => Array.from({ length: 3 }, () => pickRandom(symbols)));
+}
+
+function makeRow(symbols: string[]) {
+  return Array.from({ length: 3 }, () => pickRandom(symbols));
 }
 
 function evaluateGrid(grid: string[][], stake: number, bonusBoost: boolean) {
@@ -160,6 +223,7 @@ export default function FortuneSeriesPage({
   const [rounds, setRounds] = useState(0);
   const [totalWon, setTotalWon] = useState(0);
   const [bestMultiplier, setBestMultiplier] = useState(0);
+  const [rowSpinning, setRowSpinning] = useState<[boolean, boolean, boolean]>([false, false, false]);
 
   useEffect(() => {
     const email = window.localStorage.getItem("demo-wallet-email");
@@ -245,18 +309,39 @@ export default function FortuneSeriesPage({
     if (spinning || saldo < stake) return;
 
     setSpinning(true);
+    setRowSpinning([true, true, true]);
     setWinningLines([]);
-    setMessage(bonusRunning ? "Bonus round em execução..." : "Spin em execução...");
+    setMessage(bonusRunning ? "Roleta em bonus: linhas em movimento..." : "Roleta em execução, linha por linha...");
     playToneSequence([320, 420, 520], 0.05);
 
-    const interval = window.setInterval(() => {
-      setGrid(makeGrid(symbols));
-    }, 90);
+    const result = makeGrid(symbols);
+    const intervals = [0, 1, 2].map((rowIndex) =>
+      window.setInterval(() => {
+        setGrid((current) => {
+          const next = [...current] as string[][];
+          next[rowIndex] = makeRow(symbols);
+          return next;
+        });
+      }, 75 + rowIndex * 10)
+    );
+
+    [0, 1, 2].forEach((rowIndex) => {
+      window.setTimeout(() => {
+        window.clearInterval(intervals[rowIndex]);
+        setGrid((current) => {
+          const next = [...current] as string[][];
+          next[rowIndex] = result[rowIndex];
+          return next;
+        });
+        setRowSpinning((current) => {
+          const next = [...current] as [boolean, boolean, boolean];
+          next[rowIndex] = false;
+          return next;
+        });
+      }, 550 + rowIndex * 350);
+    });
 
     window.setTimeout(() => {
-      window.clearInterval(interval);
-
-      const result = makeGrid(symbols);
       const evaluation = evaluateGrid(result, stake, bonusEnabled || bonusRunning);
       const cost = bonusRunning ? 0 : stake;
       const existingFreeSpins = freeSpins;
@@ -298,7 +383,7 @@ export default function FortuneSeriesPage({
       );
 
       setSpinning(false);
-    }, 1250);
+    }, 1650);
   }
 
   return (
@@ -358,12 +443,12 @@ export default function FortuneSeriesPage({
                       return (
                         <div
                           key={`${rowIndex}-${colIndex}`}
-                          className={`relative flex h-28 items-center justify-center rounded-[22px] border border-white/10 bg-[linear-gradient(180deg,rgba(30,41,120,0.96)_0%,rgba(44,25,120,0.96)_100%)] text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all ${highlighted ? "animate-bonus-flare border-yellow-300/60 shadow-[0_0_24px_rgba(250,204,21,0.35)]" : ""} ${spinning ? "animate-reel-flicker" : ""}`}
+                          className={`relative flex h-28 items-center justify-center rounded-[22px] border border-white/10 bg-[linear-gradient(180deg,rgba(30,41,120,0.96)_0%,rgba(44,25,120,0.96)_100%)] text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all ${highlighted ? "animate-bonus-flare border-yellow-300/60 shadow-[0_0_24px_rgba(250,204,21,0.35)]" : ""} ${rowSpinning[rowIndex] ? "animate-reel-flicker" : ""}`}
                         >
                           <div className={`absolute inset-x-2 top-0 h-1 rounded-b-full bg-gradient-to-r ${symbolBg} opacity-90`} />
                           <div>
                             <div className="flex justify-center">
-                              <ReelGlyph symbol={symbol} token={symbolToken(symbol, bonusMark)} />
+                              <ReelGlyph symbol={symbol} token={symbolToken(symbol, bonusMark)} label={labels[symbol]} />
                             </div>
                             <div className="mt-2 text-[10px] font-bold uppercase tracking-[0.22em] text-white/60">
                               {labels[symbol] ?? symbol}
