@@ -26,6 +26,55 @@ type Particle = {
   duration: string;
 };
 
+function symbolToken(symbol: string, bonusMark: string) {
+  if (symbol === "BONUS") return bonusMark;
+  if (symbol === "WILD") return "WD";
+  return symbol.slice(0, 2).toUpperCase();
+}
+
+function HeroSeal({ monogram }: { monogram: string }) {
+  return (
+    <svg viewBox="0 0 120 120" className="h-24 w-24 drop-shadow-[0_10px_22px_rgba(0,0,0,0.4)]" aria-hidden>
+      <defs>
+        <radialGradient id="hero-core" cx="50%" cy="35%" r="65%">
+          <stop offset="0%" stopColor="rgba(254,243,199,1)" />
+          <stop offset="55%" stopColor="rgba(245,158,11,0.9)" />
+          <stop offset="100%" stopColor="rgba(120,53,15,0.95)" />
+        </radialGradient>
+      </defs>
+      <circle cx="60" cy="60" r="54" fill="rgba(15,23,42,0.55)" stroke="rgba(253,224,71,0.45)" strokeWidth="2" />
+      <circle cx="60" cy="60" r="44" fill="url(#hero-core)" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" />
+      <path d="M26 66 C44 48, 76 48, 94 66" fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth="2" />
+      <text x="60" y="68" textAnchor="middle" fill="rgba(15,23,42,0.92)" fontSize="30" fontWeight="900" letterSpacing="2">
+        {monogram}
+      </text>
+    </svg>
+  );
+}
+
+function ReelGlyph({ symbol, token }: { symbol: string; token: string }) {
+  const isBonus = symbol === "BONUS";
+  const isWild = symbol === "WILD";
+
+  return (
+    <svg viewBox="0 0 96 96" className="h-14 w-14 drop-shadow-[0_6px_14px_rgba(0,0,0,0.35)]" aria-hidden>
+      <defs>
+        <linearGradient id="glyph-bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor={isBonus ? "rgba(250,204,21,0.95)" : isWild ? "rgba(134,239,172,0.95)" : "rgba(125,211,252,0.92)"} />
+          <stop offset="100%" stopColor={isBonus ? "rgba(180,83,9,0.95)" : isWild ? "rgba(22,163,74,0.95)" : "rgba(99,102,241,0.95)"} />
+        </linearGradient>
+      </defs>
+      <rect x="10" y="10" width="76" height="76" rx="22" fill="rgba(15,23,42,0.48)" stroke="rgba(255,255,255,0.25)" />
+      <rect x="17" y="17" width="62" height="62" rx="18" fill="url(#glyph-bg)" stroke="rgba(255,255,255,0.45)" strokeWidth="1.6" />
+      {isBonus && <circle cx="48" cy="30" r="6" fill="rgba(255,255,255,0.65)" />}
+      {isWild && <path d="M24 64 L48 24 L72 64 Z" fill="rgba(255,255,255,0.22)" />}
+      <text x="48" y="58" textAnchor="middle" fill="rgba(15,23,42,0.95)" fontSize="24" fontWeight="900" letterSpacing="1.5">
+        {token}
+      </text>
+    </svg>
+  );
+}
+
 function pickRandom(symbols: string[]) {
   return symbols[Math.floor(Math.random() * symbols.length)];
 }
@@ -271,8 +320,8 @@ export default function FortuneSeriesPage({
 
               <div className="mb-3 flex justify-center">
                 <div className="rounded-[28px] border border-white/15 bg-[linear-gradient(180deg,rgba(255,255,255,0.1),rgba(255,255,255,0.02))] px-5 py-3 text-center shadow-[0_12px_30px_rgba(0,0,0,0.25)]">
-                  <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full border border-amber-200/40 bg-[radial-gradient(circle_at_top,_rgba(250,204,21,0.32),_rgba(146,64,14,0.4)_65%,_rgba(51,65,85,0.45)_100%)] text-3xl font-black tracking-[0.08em] text-amber-50 shadow-[0_14px_30px_rgba(0,0,0,0.35)]">
-                    {mascotMonogram}
+                  <div className="mx-auto flex h-24 w-24 items-center justify-center">
+                    <HeroSeal monogram={mascotMonogram} />
                   </div>
                 </div>
               </div>
@@ -295,12 +344,8 @@ export default function FortuneSeriesPage({
                         >
                           <div className={`absolute inset-x-2 top-0 h-1 rounded-b-full bg-gradient-to-r ${symbolBg} opacity-90`} />
                           <div>
-                            <div className="text-3xl font-black uppercase tracking-[0.08em] text-amber-50">
-                              {symbol === "BONUS"
-                                ? bonusMark
-                                : symbol === "WILD"
-                                  ? "WD"
-                                  : symbol.slice(0, 2)}
+                            <div className="flex justify-center">
+                              <ReelGlyph symbol={symbol} token={symbolToken(symbol, bonusMark)} />
                             </div>
                             <div className="mt-2 text-[10px] font-bold uppercase tracking-[0.22em] text-white/60">
                               {labels[symbol] ?? symbol}
