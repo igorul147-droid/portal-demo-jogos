@@ -8,6 +8,7 @@ export default function FortuneRabbitPage() {
       title="Fortune Rabbit"
       shortTitle="Rabbit Fortune"
       mascot="🐇"
+      visualStyle="fortune-classic"
       provider="PG Inspired"
       headerAccent="linear-gradient(180deg,rgba(88,56,180,0.88)_0%,rgba(29,17,72,0.98)_100%)"
       stageAccent="bg-[radial-gradient(circle_at_top,_rgba(147,197,253,0.18),_transparent_20%),linear-gradient(180deg,rgba(104,64,208,0.92)_0%,rgba(73,26,138,0.96)_100%)]"

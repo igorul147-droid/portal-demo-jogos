@@ -1,16 +1,70 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import PortalHeader from "@/components/PortalHeader";
 import Footer from "@/components/Footer";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import { TrendingUp, TrendingDown, Target, Zap, Calendar, BarChart3 } from 'lucide-react';
 
+type AuditEntry = {
+  sequence: number;
+  signature: string;
+  source: "engine" | "provider" | "cache";
+  health: "ok" | "degraded";
+  latencyMs: number;
+  incidents: number;
+  timestamp: number;
+};
+
+type AuditMetrics = {
+  uptimePercent: number;
+  p95LatencyMs: number;
+  errorRate1m: number;
+  degradedStreakSec: number;
+  samples24h: number;
+};
+
 export default function Analise() {
   const { totalApostadoGlobal, totalGanhoGlobal, totalRodadasGlobal } = useDemoWallet();
+  const [auditEntries, setAuditEntries] = useState<AuditEntry[]>([]);
+  const [auditMetrics, setAuditMetrics] = useState<AuditMetrics>({
+    uptimePercent: 100,
+    p95LatencyMs: 0,
+    errorRate1m: 0,
+    degradedStreakSec: 0,
+    samples24h: 0,
+  });
   
   const lucroGlobal = totalGanhoGlobal - totalApostadoGlobal;
   const roiPorcentagem = totalApostadoGlobal > 0 ? ((lucroGlobal / totalApostadoGlobal) * 100).toFixed(1) : 0;
   const ticketMedio = totalRodadasGlobal > 0 ? (totalApostadoGlobal / totalRodadasGlobal).toFixed(2) : 0;
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadAudit() {
+      try {
+        const response = await fetch("/api/sports/audit?limit=8", { cache: "no-store" });
+        if (!response.ok) return;
+
+        const payload = (await response.json()) as { entries: AuditEntry[]; metrics: AuditMetrics };
+        if (cancelled) return;
+
+        setAuditEntries(payload.entries);
+        setAuditMetrics(payload.metrics);
+      } catch {
+        if (cancelled) return;
+      }
+    }
+
+    loadAudit();
+    const interval = window.setInterval(loadAudit, 3000);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+    };
+  }, []);
 
   // Dados fictícios de estatísticas
   const estatisticas = [
@@ -102,6 +156,71 @@ export default function Analise() {
               </div>
             );
           })}
+        </div>
+      </section>
+
+      {/* NOC Sports Feed */}
+      <section className="mx-auto max-w-7xl px-6 pb-16">
+        <div className="rounded-3xl border border-white/10 bg-white/5 p-8">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <p className="text-xs uppercase tracking-[0.18em] text-white/50">Sports Feed NOC</p>
+              <h2 className="mt-2 text-2xl font-bold">Confiabilidade operacional em tempo real</h2>
+            </div>
+            <span className={`rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] ${auditMetrics.degradedStreakSec >= 8 ? "border-rose-300/35 bg-rose-300/15 text-rose-100" : "border-emerald-300/30 bg-emerald-300/15 text-emerald-100"}`}>
+              {auditMetrics.degradedStreakSec >= 8 ? "Alerta ativo" : "Operação estável"}
+            </span>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-4">
+            <article className="rounded-2xl border border-white/10 bg-black/25 p-4">
+              <p className="text-xs uppercase tracking-[0.16em] text-white/45">Uptime 24h</p>
+              <p className="mt-2 text-2xl font-black text-emerald-200">{auditMetrics.uptimePercent.toFixed(2)}%</p>
+            </article>
+            <article className="rounded-2xl border border-white/10 bg-black/25 p-4">
+              <p className="text-xs uppercase tracking-[0.16em] text-white/45">P95 latência</p>
+              <p className="mt-2 text-2xl font-black text-cyan-200">{auditMetrics.p95LatencyMs}ms</p>
+            </article>
+            <article className="rounded-2xl border border-white/10 bg-black/25 p-4">
+              <p className="text-xs uppercase tracking-[0.16em] text-white/45">Erro 1m</p>
+              <p className="mt-2 text-2xl font-black text-amber-200">{auditMetrics.errorRate1m.toFixed(2)}%</p>
+            </article>
+            <article className="rounded-2xl border border-white/10 bg-black/25 p-4">
+              <p className="text-xs uppercase tracking-[0.16em] text-white/45">Degraded streak</p>
+              <p className="mt-2 text-2xl font-black text-rose-200">{auditMetrics.degradedStreakSec}s</p>
+            </article>
+          </div>
+
+          <div className="mt-6 overflow-x-auto rounded-2xl border border-white/10">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-white/10 bg-white/5">
+                  <th className="p-3 text-left text-white/60">Seq</th>
+                  <th className="p-3 text-left text-white/60">Saúde</th>
+                  <th className="p-3 text-left text-white/60">Fonte</th>
+                  <th className="p-3 text-right text-white/60">Latência</th>
+                  <th className="p-3 text-left text-white/60">Assinatura</th>
+                  <th className="p-3 text-right text-white/60">Horário</th>
+                </tr>
+              </thead>
+              <tbody>
+                {auditEntries.map((entry) => (
+                  <tr key={`${entry.sequence}-${entry.signature}`} className="border-b border-white/10">
+                    <td className="p-3 font-semibold text-white">#{entry.sequence}</td>
+                    <td className="p-3">
+                      <span className={`rounded-full border px-2 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${entry.health === "ok" ? "border-emerald-300/30 bg-emerald-300/15 text-emerald-100" : "border-rose-300/30 bg-rose-300/15 text-rose-100"}`}>
+                        {entry.health}
+                      </span>
+                    </td>
+                    <td className="p-3 text-white/75">{entry.source}</td>
+                    <td className="p-3 text-right text-white/80">{entry.latencyMs}ms</td>
+                    <td className="p-3 text-white/75">{entry.signature.slice(0, 10)}</td>
+                    <td className="p-3 text-right text-white/60">{new Date(entry.timestamp).toLocaleTimeString("pt-BR")}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 

@@ -8,6 +8,7 @@ export default function TreeOfFortunePage() {
       title="Tree of Fortune"
       shortTitle="Fortune Tree"
       mascot="🌳"
+      visualStyle="fortune-classic"
       provider="PG Inspired"
       headerAccent="linear-gradient(180deg,rgba(41,134,84,0.88)_0%,rgba(20,66,43,0.98)_100%)"
       stageAccent="bg-[radial-gradient(circle_at_top,_rgba(74,222,128,0.2),_transparent_20%),linear-gradient(180deg,rgba(25,101,66,0.94)_0%,rgba(18,67,52,0.98)_100%)]"

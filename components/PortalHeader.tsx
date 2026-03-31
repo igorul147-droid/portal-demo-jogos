@@ -54,8 +54,14 @@ export default function PortalHeader({
             <Link href="/jogos/catalogo" className="text-sm text-white/70 transition hover:text-white">
               Jogos
             </Link>
+            <Link href="/esportes" className="text-sm text-white/70 transition hover:text-white">
+              Esportes
+            </Link>
             <Link href="/analise" className="text-sm text-white/70 transition hover:text-white">
               Análise
+            </Link>
+            <Link href="/operacao" className="text-sm text-white/70 transition hover:text-white">
+              Operação
             </Link>
             <Link href="/referencia" className="text-sm text-white/70 transition hover:text-white">
               Referência
@@ -134,6 +140,13 @@ export default function PortalHeader({
               Jogos
             </Link>
             <Link
+              href="/esportes"
+              onClick={() => setMenuAberto(false)}
+              className="rounded-lg px-4 py-2 text-white/70 hover:bg-white/10 transition"
+            >
+              Esportes
+            </Link>
+            <Link
               href="/#ranking"
               onClick={() => setMenuAberto(false)}
               className="rounded-lg px-4 py-2 text-white/70 hover:bg-white/10 transition"
@@ -146,6 +159,13 @@ export default function PortalHeader({
               className="rounded-lg px-4 py-2 text-white/70 hover:bg-white/10 transition"
             >
               Perfil
+            </Link>
+            <Link
+              href="/operacao"
+              onClick={() => setMenuAberto(false)}
+              className="rounded-lg px-4 py-2 text-white/70 hover:bg-white/10 transition"
+            >
+              Operação
             </Link>
             <Link
               href="/cadastro"

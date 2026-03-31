@@ -156,4 +156,4 @@ export default function SweetBonanzaPage() {
       <Footer />
     </div>
   );
-}
+} 

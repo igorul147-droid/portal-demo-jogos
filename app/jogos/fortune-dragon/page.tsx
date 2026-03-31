@@ -8,6 +8,7 @@ export default function FortuneDragonPage() {
       title="Fortune Dragon"
       shortTitle="Dragon Fortune"
       mascot="🐲"
+      visualStyle="fortune-classic"
       provider="PG Inspired"
       headerAccent="linear-gradient(180deg,rgba(164,55,185,0.88)_0%,rgba(62,22,101,0.98)_100%)"
       stageAccent="bg-[radial-gradient(circle_at_top,_rgba(244,114,182,0.18),_transparent_20%),linear-gradient(180deg,rgba(111,35,177,0.92)_0%,rgba(55,23,120,0.96)_100%)]"

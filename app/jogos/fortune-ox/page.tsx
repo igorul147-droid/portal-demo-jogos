@@ -8,6 +8,7 @@ export default function FortuneOxPage() {
       title="Fortune Ox"
       shortTitle="Ox Fortune"
       mascot="🐂"
+      visualStyle="fortune-classic"
       provider="PG Inspired"
       headerAccent="linear-gradient(180deg,rgba(210,88,48,0.88)_0%,rgba(89,21,28,0.98)_100%)"
       stageAccent="bg-[radial-gradient(circle_at_top,_rgba(254,240,138,0.16),_transparent_20%),linear-gradient(180deg,rgba(168,49,49,0.92)_0%,rgba(114,24,24,0.96)_100%)]"

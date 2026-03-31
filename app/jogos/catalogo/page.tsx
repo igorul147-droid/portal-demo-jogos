@@ -158,6 +158,15 @@ export default function CatalogoPage() {
               <p className="mt-3 text-3xl font-bold text-white">{filtrados.length}</p>
               <p className="mt-2 text-sm text-white/55">com acesso imediato</p>
             </div>
+
+            <button
+              onClick={() => router.push("/esportes")}
+              className="rounded-[24px] border border-emerald-400/15 bg-[radial-gradient(circle_at_top,_rgba(34,197,94,0.12),_transparent_55%),linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-5 text-left transition hover:border-emerald-300/30 hover:bg-white/[0.07]"
+            >
+              <p className="text-xs uppercase tracking-[0.2em] text-emerald-300">Sportsbook</p>
+              <p className="mt-3 text-2xl font-bold text-white">Apostas esportivas</p>
+              <p className="mt-2 text-sm text-white/55">Nova vertical com betslip, odds mockadas e integração direta com a wallet demo.</p>
+            </button>
           </div>
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">

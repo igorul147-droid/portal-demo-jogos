@@ -8,6 +8,7 @@ export default function FortuneMousePage() {
       title="Fortune Mouse"
       shortTitle="Mouse Fortune"
       mascot="🐭"
+      visualStyle="fortune-classic"
       provider="PG Inspired"
       headerAccent="linear-gradient(180deg,rgba(122,36,90,0.88)_0%,rgba(71,18,54,0.98)_100%)"
       stageAccent="bg-[radial-gradient(circle_at_top,_rgba(251,191,36,0.16),_transparent_20%),linear-gradient(180deg,rgba(124,39,89,0.92)_0%,rgba(70,22,73,0.97)_100%)]"

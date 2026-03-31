@@ -82,6 +82,12 @@ export default function Home() {
                   Entrar no Lobby
                 </a>
                 <a
+                  href="/esportes"
+                  className="rounded-2xl border border-emerald-400/25 bg-emerald-400/10 px-6 py-3 text-sm font-semibold text-emerald-200 transition hover:bg-emerald-400/16"
+                >
+                  Abrir Sportsbook
+                </a>
+                <a
                   href="/perfil"
                   className="rounded-2xl border border-white/20 bg-white/8 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/12"
                 >
@@ -153,6 +159,39 @@ export default function Home() {
             value={`${lucroGlobal >= 0 ? "+" : ""}${formatarMoedas(lucroGlobal)}`}
             highlight={lucroGlobal >= 0}
           />
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 pb-10">
+        <div className="rounded-[30px] border border-white/10 bg-[radial-gradient(circle_at_top,_rgba(34,197,94,0.14),_transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.2)]">
+          <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+            <div>
+              <p className="text-xs uppercase tracking-[0.22em] text-emerald-300">Nova vertical</p>
+              <h2 className="mt-3 text-3xl font-black text-white">Sportsbook beta já integrado à mesma carteira</h2>
+              <p className="mt-3 max-w-2xl text-sm text-white/65 sm:text-base">
+                Primeira camada de apostas esportivas com eventos mockados, odds, betslip múltipla e tickets ativos para validar produto e experiência.
+              </p>
+              <div className="mt-5 flex flex-wrap gap-3 text-xs">
+                <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-emerald-200">Betslip integrada</span>
+                <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-cyan-200">Liquidação mockada</span>
+                <span className="rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-amber-200">Mesma wallet demo</span>
+              </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="rounded-[22px] border border-white/10 bg-black/25 p-4">
+                <p className="text-xs text-white/45">Futebol</p>
+                <p className="mt-2 text-lg font-black text-white">1X2, gols e BTTS</p>
+              </div>
+              <div className="rounded-[22px] border border-white/10 bg-black/25 p-4">
+                <p className="text-xs text-white/45">Basquete</p>
+                <p className="mt-2 text-lg font-black text-white">Moneyline e totais</p>
+              </div>
+              <div className="rounded-[22px] border border-white/10 bg-black/25 p-4">
+                <p className="text-xs text-white/45">Tênis</p>
+                <p className="mt-2 text-lg font-black text-white">Vencedor e sets</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
