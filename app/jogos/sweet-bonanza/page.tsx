@@ -53,7 +53,7 @@ export default function SweetBonanzaPage() {
     }
 
     carregarLaunchUrl();
-  }, [router]);
+  }, [router, saldo]);
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(236,72,153,0.16),_transparent_30%),radial-gradient(circle_at_bottom_left,_rgba(34,211,238,0.12),_transparent_26%),#0a0a0f]">
@@ -156,4 +156,4 @@ export default function SweetBonanzaPage() {
       <Footer />
     </div>
   );
-} 
+}

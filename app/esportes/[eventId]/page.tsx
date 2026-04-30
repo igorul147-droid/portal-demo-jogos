@@ -5,7 +5,6 @@ import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import Footer from "@/components/Footer";
 import PortalHeader from "@/components/PortalHeader";
-import { formatBRL } from "@/lib/currency";
 import {
   clamp,
   findEventById,
@@ -18,34 +17,34 @@ import {
 export default function EventoEsportivoPage() {
   const params = useParams<{ eventId: string }>();
   const baseEvent = useMemo(() => findEventById(params.eventId), [params.eventId]);
-  const [event, setEvent] = useState<SportsEvent | null>(baseEvent ?? null);
+  const [liveEvents, setLiveEvents] = useState<Record<string, SportsEvent>>({});
+  const event = liveEvents[params.eventId] ?? baseEvent ?? null;
 
   useEffect(() => {
-    setEvent(baseEvent ?? null);
-  }, [baseEvent]);
-
-  useEffect(() => {
-    if (!event?.live) return;
+    if (!baseEvent?.live) return;
 
     const interval = window.setInterval(() => {
-      setEvent((current) => {
-        if (!current) return current;
+      setLiveEvents((current) => {
+        const currentEvent = current[params.eventId] ?? baseEvent;
 
         return {
           ...current,
-          liveMinute: current.liveMinute !== undefined ? current.liveMinute + 1 : current.liveMinute,
-          scoreHome: Math.random() < 0.05 ? (current.scoreHome ?? 0) + 1 : current.scoreHome,
-          scoreAway: Math.random() < 0.04 ? (current.scoreAway ?? 0) + 1 : current.scoreAway,
-          markets: current.markets.map((market) => ({
-            ...market,
-            odd: Number(clamp(Number((market.odd + (Math.random() - 0.5) * 0.16).toFixed(2)), 1.2, 6.8).toFixed(2)),
-          })),
+          [params.eventId]: {
+            ...currentEvent,
+            liveMinute: currentEvent.liveMinute !== undefined ? currentEvent.liveMinute + 1 : currentEvent.liveMinute,
+            scoreHome: Math.random() < 0.05 ? (currentEvent.scoreHome ?? 0) + 1 : currentEvent.scoreHome,
+            scoreAway: Math.random() < 0.04 ? (currentEvent.scoreAway ?? 0) + 1 : currentEvent.scoreAway,
+            markets: currentEvent.markets.map((market) => ({
+              ...market,
+              odd: Number(clamp(Number((market.odd + (Math.random() - 0.5) * 0.16).toFixed(2)), 1.2, 6.8).toFixed(2)),
+            })),
+          },
         };
       });
     }, 5000);
 
     return () => window.clearInterval(interval);
-  }, [event?.live]);
+  }, [baseEvent, params.eventId]);
 
   if (!event) {
     return (

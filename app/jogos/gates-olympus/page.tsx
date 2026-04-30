@@ -52,7 +52,7 @@ export default function GatesOlympusPage() {
     }
 
     carregarLaunchUrl();
-  }, [router]);
+  }, [router, saldo]);
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(245,158,11,0.16),_transparent_30%),radial-gradient(circle_at_bottom_left,_rgba(59,130,246,0.12),_transparent_24%),#09090b] text-white">

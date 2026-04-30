@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Footer from "@/components/Footer";
 import PortalHeader from "@/components/PortalHeader";
 
@@ -134,33 +133,55 @@ export default function OperacaoPage() {
     hasMoreEntries: false,
     hasMoreAuthEntries: false,
   });
-  const [lastAuditAt, setLastAuditAt] = useState<number>(Date.now());
+  const [lastAuditAt, setLastAuditAt] = useState<number>(EMPTY_STATUS.lastSyncAt);
   const [activePreset, setActivePreset] = useState<ViewPreset["id"]>("balanceado");
 
+  const applyPreset = useCallback((presetId: ViewPreset["id"]) => {
+    const preset = VIEW_PRESETS.find((item) => item.id === presetId);
+    if (!preset) return;
+
+    setActivePreset(preset.id);
+    setAuditLimit(preset.limit);
+    setFeedCursorTs(null);
+    setAuthCursorTs(null);
+    setFeedCursorHistory([]);
+    setAuthCursorHistory([]);
+  }, []);
+
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const feedCursorParam = Number(params.get("feedCursorTs") || "0");
-    const authCursorParam = Number(params.get("authCursorTs") || "0");
-    const pageLimitParam = Number(params.get("pageLimit") || "12");
-    const presetParam = (params.get("viewPreset") || "").toLowerCase() as ViewPreset["id"];
+    let cancelled = false;
 
-    if (Number.isFinite(feedCursorParam) && feedCursorParam > 0) {
-      setFeedCursorTs(feedCursorParam);
-    }
+    queueMicrotask(() => {
+      if (cancelled) return;
 
-    if (Number.isFinite(authCursorParam) && authCursorParam > 0) {
-      setAuthCursorTs(authCursorParam);
-    }
+      const params = new URLSearchParams(window.location.search);
+      const feedCursorParam = Number(params.get("feedCursorTs") || "0");
+      const authCursorParam = Number(params.get("authCursorTs") || "0");
+      const pageLimitParam = Number(params.get("pageLimit") || "12");
+      const presetParam = (params.get("viewPreset") || "").toLowerCase() as ViewPreset["id"];
 
-    if (Number.isFinite(pageLimitParam)) {
-      setAuditLimit(Math.max(5, Math.min(100, pageLimitParam)));
-    }
+      if (Number.isFinite(feedCursorParam) && feedCursorParam > 0) {
+        setFeedCursorTs(feedCursorParam);
+      }
 
-    if (VIEW_PRESETS.some((item) => item.id === presetParam)) {
-      setActivePreset(presetParam);
-    }
+      if (Number.isFinite(authCursorParam) && authCursorParam > 0) {
+        setAuthCursorTs(authCursorParam);
+      }
 
-    setCursorReady(true);
+      if (Number.isFinite(pageLimitParam)) {
+        setAuditLimit(Math.max(5, Math.min(100, pageLimitParam)));
+      }
+
+      if (VIEW_PRESETS.some((item) => item.id === presetParam)) {
+        setActivePreset(presetParam);
+      }
+
+      setCursorReady(true);
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -257,7 +278,7 @@ export default function OperacaoPage() {
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [cursorReady]);
+  }, [applyPreset, cursorReady]);
 
   async function logoutAdminSession() {
     await fetch("/api/admin/session", { method: "DELETE" });
@@ -308,18 +329,6 @@ export default function OperacaoPage() {
     setAuditLimit(next);
     const inferredPreset = VIEW_PRESETS.find((item) => item.limit === next);
     setActivePreset(inferredPreset ? inferredPreset.id : "balanceado");
-    setFeedCursorTs(null);
-    setAuthCursorTs(null);
-    setFeedCursorHistory([]);
-    setAuthCursorHistory([]);
-  }
-
-  function applyPreset(presetId: ViewPreset["id"]) {
-    const preset = VIEW_PRESETS.find((item) => item.id === presetId);
-    if (!preset) return;
-
-    setActivePreset(preset.id);
-    setAuditLimit(preset.limit);
     setFeedCursorTs(null);
     setAuthCursorTs(null);
     setFeedCursorHistory([]);

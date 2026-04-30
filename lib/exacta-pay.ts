@@ -1,5 +1,3 @@
-import { NextRequest, NextResponse } from 'next/server';
-
 // Configuração Exacta Pay
 const EXACTA_API_URL = process.env.EXACTA_API_URL || 'https://api.exactapay.com/v1';
 const EXACTA_API_KEY = process.env.EXACTA_API_KEY;

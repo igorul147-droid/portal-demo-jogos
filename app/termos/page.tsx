@@ -2,7 +2,6 @@
 
 import PortalHeader from '@/components/PortalHeader';
 import Footer from '@/components/Footer';
-import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
 

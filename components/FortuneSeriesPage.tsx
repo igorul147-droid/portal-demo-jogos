@@ -657,7 +657,7 @@ export default function FortuneSeriesPage({
   const [winningLines, setWinningLines] = useState<number[]>([]);
   const [particles, setParticles] = useState<Particle[]>([]);
   const [rounds, setRounds] = useState(0);
-  const [totalWon, setTotalWon] = useState(0);
+  const [, setTotalWon] = useState(0);
   const [bestMultiplier, setBestMultiplier] = useState(0);
   const [rowSpinning, setRowSpinning] = useState<[boolean, boolean, boolean]>([false, false, false]);
   const [rowOffset, setRowOffset] = useState<[number, number, number]>([0, 0, 0]);
