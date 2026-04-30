@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import PortalHeader from "@/components/PortalHeader";
 import Footer from "@/components/Footer";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
-import { CreditCard, Zap, TrendingUp, AlertCircle, Lock, Copy, Check } from "lucide-react";
+import { Zap, TrendingUp, AlertCircle, Lock, Copy, Check } from "lucide-react";
 import exactaPay from "@/lib/exacta-pay";
 import { formatBRL } from "@/lib/currency";
 
@@ -70,15 +71,6 @@ export default function CarteiraPage() {
     { id: "cripto", nome: "🪙 Criptomoedas (Bitcoin/Ethereum)", icon: TrendingUp },
   ];
 
-  // Formata validade
-  function formatarValidade(valor: string) {
-    const numeros = valor.replace(/\D/g, "").slice(0, 4);
-    if (numeros.length >= 2) {
-      return `${numeros.slice(0, 2)}/${numeros.slice(2)}`;
-    }
-    return numeros;
-  }
-
   // Criar transação Pix via Exacta Pay
   async function criarTransacaoPix(valor: number) {
     const referenceId = `PIX-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
@@ -116,10 +108,6 @@ export default function CarteiraPage() {
       console.error('Erro ao criar transação cripto:', error);
       throw error;
     }
-  }
-
-  function validarCartao() {
-    return true;
   }
 
   async function handleDepositar(e: React.FormEvent) {
@@ -201,7 +189,7 @@ export default function CarteiraPage() {
         }
 
         setCarregandoDeposito(false);
-      } catch (error) {
+      } catch {
         setMessageDeposito("❌ Erro ao conectar ao PSP. Tente novamente.");
         setCarregandoDeposito(false);
       }
@@ -248,18 +236,11 @@ export default function CarteiraPage() {
 
         // Limpa mensagem após 3 segundos
         setTimeout(() => setMessageSaque(""), 3000);
-      } catch (error) {
+      } catch {
         setMessageSaque("❌ Erro ao processar saque. Tente novamente.");
         setCarregandoSaque(false);
       }
     }, 1500);
-  }
-
-  function copiarPix() {
-    const pixKey = "betclean@pix.com.br";
-    navigator.clipboard.writeText(pixKey);
-    setCopiouPix(true);
-    setTimeout(() => setCopiouPix(false), 2000);
   }
 
   return (
@@ -269,12 +250,12 @@ export default function CarteiraPage() {
       <div className="mx-auto max-w-4xl px-6 py-10">
         {/* Header */}
         <div className="mb-10">
-          <a
+          <Link
             href="/"
             className="inline-flex rounded-2xl border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/80 transition hover:bg-white/10 mb-6"
           >
             ← Voltar
-          </a>
+          </Link>
 
           <h1 className="text-4xl font-bold mb-2">Minha Carteira</h1>
           <p className="text-white/60">Gerencie seus depósitos e saques de dinheiro real com segurança SSL</p>

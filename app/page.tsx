@@ -8,42 +8,13 @@ import PromoAndBonus from "@/components/PromoAndBonus";
 import ComoFunciona from "@/components/ComoFunciona";
 import CertificadoRNG from "@/components/CertificadoRNG";
 import Footer from "@/components/Footer";
+import Link from "next/link";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import { formatBRL } from "@/lib/currency";
 
 function formatarMoedas(valor: number) {
   return formatBRL(valor);
 }
-
-const jogos = [
-  {
-    titulo: "Fortuna Neon",
-    categoria: "Slot",
-    descricao:
-      "Um caça-níquel autoral com visual futurista e efeitos vibrantes.",
-    rota: "/jogos/fortuna-neon",
-    gradiente: "from-fuchsia-500/30 via-violet-500/20 to-cyan-400/20",
-    botao: "Jogar",
-  },
-  {
-    titulo: "Aviator",
-    categoria: "Aviação",
-    descricao:
-      "Assista o avião decolar e sacar antes do crash. Quanto mais alto voa, maior o ganho!",
-    rota: "/jogos/turbo-rise",
-    gradiente: "from-blue-400/30 via-cyan-500/20 to-purple-500/20",
-    botao: "Jogar",
-  },
-  {
-    titulo: "Mines",
-    categoria: "Slot",
-    descricao:
-      "Rodadas em grade 3x3 com leitura de fileiras e cruz perpendicular no estilo cassino.",
-    rota: "/jogos/mines",
-    gradiente: "from-emerald-400/30 via-teal-500/20 to-cyan-500/20",
-    botao: "Jogar",
-  },
-];
 
 export default function Home() {
   const {
@@ -75,24 +46,24 @@ export default function Home() {
                 padrao visual institucional e jornada otimizada para conversao.
               </p>
               <div className="mt-7 flex flex-wrap gap-3">
-                <a
+                <Link
                   href="/jogos/catalogo"
                   className="pill-brand rounded-2xl px-6 py-3 text-sm font-bold transition hover:brightness-105"
                 >
                   Entrar no Lobby
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/esportes"
                   className="rounded-2xl border border-emerald-400/25 bg-emerald-400/10 px-6 py-3 text-sm font-semibold text-emerald-200 transition hover:bg-emerald-400/16"
                 >
                   Abrir Sportsbook
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/perfil"
                   className="rounded-2xl border border-white/20 bg-white/8 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/12"
                 >
                   Ver Perfil da Conta
-                </a>
+                </Link>
               </div>
             </div>
 

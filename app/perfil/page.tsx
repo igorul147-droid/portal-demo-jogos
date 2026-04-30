@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import PortalHeader from "@/components/PortalHeader";
 import Footer from "@/components/Footer";
 import StatsCard from "@/components/StatsCard";
@@ -28,8 +29,17 @@ export default function PerfilPage() {
   const [emailsRecuperacao, setEmailsRecuperacao] = useState<RecoveryLogItem[]>([]);
 
   useEffect(() => {
-    setContas(getAccounts());
-    setEmailsRecuperacao(getRecoveryLog());
+    let cancelado = false;
+
+    queueMicrotask(() => {
+      if (cancelado) return;
+      setContas(getAccounts());
+      setEmailsRecuperacao(getRecoveryLog());
+    });
+
+    return () => {
+      cancelado = true;
+    };
   }, []);
 
   const lucroGlobal = totalGanhoGlobal - totalApostadoGlobal;
@@ -39,12 +49,12 @@ export default function PerfilPage() {
       <PortalHeader />
 
       <div className="mx-auto max-w-7xl px-6 py-10">
-        <a
+        <Link
           href="/"
           className="inline-flex rounded-2xl border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/80 transition hover:bg-white/10"
         >
           ← Voltar para o portal
-        </a>
+        </Link>
 
         <section className="mt-8 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
           <div className="rounded-3xl border border-white/10 bg-white/5 p-6">

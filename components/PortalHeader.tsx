@@ -2,8 +2,9 @@
 
 import { useDemoWallet } from "@/components/DemoWalletProvider";
 import { Menu, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 function formatarMoedas(valor: number) {
   return valor.toLocaleString("pt-BR", {
@@ -16,17 +17,56 @@ type PortalHeaderProps = {
   mostrarMenu?: boolean;
 };
 
+const LINKS_PRINCIPAIS = [
+  { href: '/', label: 'Início' },
+  { href: '/jogos/catalogo', label: 'Jogos' },
+  { href: '/esportes', label: 'Esportes' },
+];
+
+const LINKS_SECUNDARIOS = [
+  { href: '/analise', label: 'Análise' },
+  { href: '/operacao', label: 'Operação' },
+  { href: '/referencia', label: 'Referência' },
+  { href: '/carteira', label: 'Carteira' },
+  { href: '/suporte', label: 'Suporte' },
+  { href: '/perfil', label: 'Perfil' },
+];
+
+const LINKS_MOBILE = [
+  ...LINKS_PRINCIPAIS,
+  ...LINKS_SECUNDARIOS,
+];
+
+const MENU_MOBILE_ID = "portal-menu-mobile";
+const SUBMENU_LATERAL_ID = "portal-submenu-lateral";
+
+function subscribeAuth(callback: () => void) {
+  window.addEventListener("storage", callback);
+
+  return () => {
+    window.removeEventListener("storage", callback);
+  };
+}
+
+function getAuthSnapshot() {
+  if (typeof window === "undefined") return "";
+  return window.localStorage.getItem("demo-wallet-email") ?? "";
+}
+
 export default function PortalHeader({
   mostrarMenu = true,
 }: PortalHeaderProps) {
   const { saldo, nomeUsuario } = useDemoWallet();
+  const pathname = usePathname();
   const [menuAberto, setMenuAberto] = useState(false);
-  const [isLogado, setIsLogado] = useState(false);
+  const [submenuLateralAberto, setSubmenuLateralAberto] = useState(false);
+  const emailLogado = useSyncExternalStore(subscribeAuth, getAuthSnapshot, () => "");
+  const isLogado = Boolean(emailLogado);
 
-  useEffect(() => {
-    const email = window.localStorage.getItem("demo-wallet-email");
-    setIsLogado(!!email);
-  }, []);
+  function fecharMenus() {
+    setMenuAberto(false);
+    setSubmenuLateralAberto(false);
+  }
 
   return (
     <header className="border-b border-white/10 bg-black/30 backdrop-blur sticky top-0 z-40">
@@ -35,6 +75,7 @@ export default function PortalHeader({
         <Link
           href="/"
           className="flex items-center gap-3"
+          onClick={fecharMenus}
         >
           <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-300 via-yellow-400 to-orange-500 font-black text-black shrink-0 shadow-[0_0_20px_rgba(251,191,36,0.35)]">
             BC
@@ -48,33 +89,29 @@ export default function PortalHeader({
         {/* Desktop Menu */}
         {mostrarMenu && (
           <nav className="hidden items-center gap-6 lg:flex">
-            <Link href="/" className="text-sm text-white/70 transition hover:text-white">
-              Início
-            </Link>
-            <Link href="/jogos/catalogo" className="text-sm text-white/70 transition hover:text-white">
-              Jogos
-            </Link>
-            <Link href="/esportes" className="text-sm text-white/70 transition hover:text-white">
-              Esportes
-            </Link>
-            <Link href="/analise" className="text-sm text-white/70 transition hover:text-white">
-              Análise
-            </Link>
-            <Link href="/operacao" className="text-sm text-white/70 transition hover:text-white">
-              Operação
-            </Link>
-            <Link href="/referencia" className="text-sm text-white/70 transition hover:text-white">
-              Referência
-            </Link>
-            <Link href="/carteira" className="text-sm text-white/70 transition hover:text-white">
-              Carteira
-            </Link>
-            <Link href="/suporte" className="text-sm text-white/70 transition hover:text-white">
-              Suporte
-            </Link>
-            <Link href="/perfil" className="text-sm text-white/70 transition hover:text-white">
-              Perfil
-            </Link>
+            {LINKS_PRINCIPAIS.map((item) => {
+              const ativo = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`text-sm transition ${ativo ? 'text-white' : 'text-white/70 hover:text-white'}`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+
+            <button
+              type="button"
+              onClick={() => setSubmenuLateralAberto((prev) => !prev)}
+              className={`rounded-xl border px-3 py-1.5 text-sm font-medium transition ${submenuLateralAberto ? 'border-amber-300/40 bg-amber-300/15 text-amber-100' : 'border-white/15 bg-white/5 text-white/75 hover:border-white/30 hover:text-white'}`}
+              aria-label="Abrir subnavegação lateral"
+              aria-expanded={submenuLateralAberto}
+              aria-controls={SUBMENU_LATERAL_ID}
+            >
+              Mais
+            </button>
           </nav>
         )}
 
@@ -112,8 +149,15 @@ export default function PortalHeader({
           {/* Mobile Menu Button */}
           {mostrarMenu && (
             <button
-              onClick={() => setMenuAberto(!menuAberto)}
+              type="button"
+              onClick={() => {
+                setSubmenuLateralAberto(false);
+                setMenuAberto(!menuAberto);
+              }}
               className="lg:hidden rounded-lg p-2 text-white/70 hover:bg-white/10 transition"
+              aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
+              aria-expanded={menuAberto}
+              aria-controls={MENU_MOBILE_ID}
             >
               {menuAberto ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -123,53 +167,24 @@ export default function PortalHeader({
 
       {/* Mobile Menu */}
       {mostrarMenu && menuAberto && (
-        <div className="border-t border-white/10 bg-black/50 backdrop-blur lg:hidden">
+        <div id={MENU_MOBILE_ID} className="border-t border-white/10 bg-black/50 backdrop-blur lg:hidden">
           <nav className="flex flex-col gap-1 px-6 py-4">
-            <Link
-              href="/"
-              onClick={() => setMenuAberto(false)}
-              className="rounded-lg px-4 py-2 text-white/70 hover:bg-white/10 transition"
-            >
-              Início
-            </Link>
-            <Link
-              href="/jogos/catalogo"
-              onClick={() => setMenuAberto(false)}
-              className="rounded-lg px-4 py-2 text-white/70 hover:bg-white/10 transition"
-            >
-              Jogos
-            </Link>
-            <Link
-              href="/esportes"
-              onClick={() => setMenuAberto(false)}
-              className="rounded-lg px-4 py-2 text-white/70 hover:bg-white/10 transition"
-            >
-              Esportes
-            </Link>
-            <Link
-              href="/#ranking"
-              onClick={() => setMenuAberto(false)}
-              className="rounded-lg px-4 py-2 text-white/70 hover:bg-white/10 transition"
-            >
-              Ranking
-            </Link>
-            <Link
-              href="/perfil"
-              onClick={() => setMenuAberto(false)}
-              className="rounded-lg px-4 py-2 text-white/70 hover:bg-white/10 transition"
-            >
-              Perfil
-            </Link>
-            <Link
-              href="/operacao"
-              onClick={() => setMenuAberto(false)}
-              className="rounded-lg px-4 py-2 text-white/70 hover:bg-white/10 transition"
-            >
-              Operação
-            </Link>
+            {LINKS_MOBILE.map((item) => {
+              const ativo = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={fecharMenus}
+                  className={`rounded-lg px-4 py-2 transition ${ativo ? 'bg-white/10 text-white' : 'text-white/70 hover:bg-white/10'}`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
             <Link
               href="/cadastro"
-              onClick={() => setMenuAberto(false)}
+              onClick={fecharMenus}
               className="rounded-lg px-4 py-2 text-white/70 hover:bg-white/10 transition"
             >
               Cadastro
@@ -183,6 +198,47 @@ export default function PortalHeader({
             </div>
           </nav>
         </div>
+      )}
+
+      {mostrarMenu && submenuLateralAberto && (
+        <>
+          <button
+            type="button"
+            onClick={() => setSubmenuLateralAberto(false)}
+            className="fixed inset-0 z-40 hidden bg-black/55 backdrop-blur-[2px] lg:block"
+            aria-label="Fechar subnavegação"
+          />
+
+          <aside id={SUBMENU_LATERAL_ID} className="fixed left-0 top-20 z-50 hidden h-[calc(100dvh-5rem)] w-[288px] overflow-y-auto border-r border-violet-500/25 bg-[#efedf6] px-3 py-3 text-[#2f1f63] shadow-[0_22px_45px_rgba(7,4,20,0.38)] lg:block">
+            <div className="mb-3 flex items-center justify-between px-1">
+              <p className="text-sm font-semibold tracking-wide">Navegação</p>
+              <button
+                type="button"
+                onClick={() => setSubmenuLateralAberto(false)}
+                className="rounded-md bg-[#ddd8ef] p-1 text-[#5a49a3] transition hover:bg-[#d3cdea]"
+                aria-label="Fechar"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <nav className="flex flex-col gap-1">
+              {LINKS_SECUNDARIOS.map((item) => {
+                const ativo = pathname.startsWith(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setSubmenuLateralAberto(false)}
+                    className={`rounded-lg border px-3 py-2 text-sm transition ${ativo ? 'border-[#4d39a8] bg-[#4d39a8] text-white shadow-[0_8px_18px_rgba(77,57,168,0.25)]' : 'border-[#c9c0e8] bg-[#f7f4ff] text-[#2f1f63] hover:bg-[#eee7ff]'}`}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
+          </aside>
+        </>
       )}
     </header>
   );

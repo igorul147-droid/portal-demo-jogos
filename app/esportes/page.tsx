@@ -857,7 +857,7 @@ export default function EsportesPage() {
             <div className="mt-4 space-y-3">
               {favoriteEvents.length === 0 ? (
                 <p className="rounded-2xl border border-white/10 bg-black/30 p-4 text-sm text-white/60">
-                  Marque confrontos com "Salvar" para manter sua shortlist sempre visível.
+                  Marque confrontos com &quot;Salvar&quot; para manter sua shortlist sempre visível.
                 </p>
               ) : (
                 favoriteEvents.slice(0, 6).map((event) => (

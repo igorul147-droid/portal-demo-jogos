@@ -9,11 +9,16 @@ export default function ModalResponsavel() {
   const [aceito, setAceito] = useState(false);
 
   useEffect(() => {
-    // Verifica se o usuário já aceitou
-    const jaAceito = window.localStorage.getItem('demo-modal-responsavel-aceito');
-    if (!jaAceito) {
-      setIsOpen(true);
-    }
+    let cancelado = false;
+
+    queueMicrotask(() => {
+      if (cancelado) return;
+      setIsOpen(!window.localStorage.getItem('demo-modal-responsavel-aceito'));
+    });
+
+    return () => {
+      cancelado = true;
+    };
   }, []);
 
   function handleAceitar() {

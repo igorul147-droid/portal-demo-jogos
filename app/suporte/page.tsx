@@ -2,7 +2,7 @@
 
 import PortalHeader from "@/components/PortalHeader";
 import Footer from "@/components/Footer";
-import { Mail, Phone, MessageCircle, Clock, Shield, Zap } from 'lucide-react';
+import { Mail, Phone, MessageCircle, Clock, Shield } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Suporte() {

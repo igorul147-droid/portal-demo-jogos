@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import PortalHeader from "@/components/PortalHeader";
 import Footer from "@/components/Footer";
 import { useDemoWallet } from "@/components/DemoWalletProvider";
-import { TrendingUp, TrendingDown, Target, Zap, Calendar, BarChart3 } from 'lucide-react';
+import { TrendingUp, Target, Zap, BarChart3 } from 'lucide-react';
 
 type AuditEntry = {
   sequence: number;

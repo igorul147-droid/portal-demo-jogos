@@ -2,9 +2,11 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   ReactNode,
 } from "react";
@@ -44,6 +46,22 @@ const DemoWalletContext = createContext<DemoWalletContextType | undefined>(
   undefined
 );
 
+function getStoredNumber(key: string, fallback: number) {
+  if (typeof window === "undefined") return fallback;
+
+  const storedValue = window.localStorage.getItem(key);
+  if (storedValue === null) return fallback;
+
+  const value = Number(storedValue);
+  return Number.isFinite(value) ? value : fallback;
+}
+
+function getStoredString(key: string, fallback: string) {
+  if (typeof window === "undefined") return fallback;
+
+  return window.localStorage.getItem(key) ?? fallback;
+}
+
 export function DemoWalletProvider({ children }: { children: ReactNode }) {
   const [saldo, setSaldo] = useState(SALDO_INICIAL);
   const [saldoReal, setSaldoReal] = useState(0);
@@ -51,28 +69,30 @@ export function DemoWalletProvider({ children }: { children: ReactNode }) {
   const [totalApostadoGlobal, setTotalApostadoGlobal] = useState(0);
   const [totalGanhoGlobal, setTotalGanhoGlobal] = useState(0);
   const [totalRodadasGlobal, setTotalRodadasGlobal] = useState(0);
-  const [carregado, setCarregado] = useState(false);
+  const carregadoRef = useRef(false);
 
   useEffect(() => {
-    const saldoSalvo = window.localStorage.getItem("demo-wallet-saldo");
-    const saldoRealSalvo = window.localStorage.getItem("demo-wallet-saldo-real");
-    const nomeSalvo = window.localStorage.getItem("demo-wallet-nome");
-    const apostadoSalvo = window.localStorage.getItem("demo-global-apostado");
-    const ganhoSalvo = window.localStorage.getItem("demo-global-ganho");
-    const rodadasSalvas = window.localStorage.getItem("demo-global-rodadas");
+    let cancelado = false;
 
-    if (saldoSalvo) setSaldo(Number(saldoSalvo));
-    if (saldoRealSalvo) setSaldoReal(Number(saldoRealSalvo));
-    if (nomeSalvo) setNomeUsuario(nomeSalvo);
-    if (apostadoSalvo) setTotalApostadoGlobal(Number(apostadoSalvo));
-    if (ganhoSalvo) setTotalGanhoGlobal(Number(ganhoSalvo));
-    if (rodadasSalvas) setTotalRodadasGlobal(Number(rodadasSalvas));
+    queueMicrotask(() => {
+      if (cancelado) return;
 
-    setCarregado(true);
+      setSaldo(getStoredNumber("demo-wallet-saldo", SALDO_INICIAL));
+      setSaldoReal(getStoredNumber("demo-wallet-saldo-real", 0));
+      setNomeUsuario(getStoredString("demo-wallet-nome", "Jogador"));
+      setTotalApostadoGlobal(getStoredNumber("demo-global-apostado", 0));
+      setTotalGanhoGlobal(getStoredNumber("demo-global-ganho", 0));
+      setTotalRodadasGlobal(getStoredNumber("demo-global-rodadas", 0));
+      carregadoRef.current = true;
+    });
+
+    return () => {
+      cancelado = true;
+    };
   }, []);
 
   useEffect(() => {
-    if (!carregado) return;
+    if (!carregadoRef.current) return;
 
     window.localStorage.setItem("demo-wallet-saldo", String(saldo));
     window.localStorage.setItem("demo-wallet-saldo-real", String(saldoReal));
@@ -93,16 +113,15 @@ export function DemoWalletProvider({ children }: { children: ReactNode }) {
     totalApostadoGlobal,
     totalGanhoGlobal,
     totalRodadasGlobal,
-    carregado,
   ]);
 
-  function registrarResultado(aposta: number, premio: number) {
+  const registrarResultado = useCallback((aposta: number, premio: number) => {
     setTotalApostadoGlobal((valor) => valor + aposta);
     setTotalGanhoGlobal((valor) => valor + premio);
     setTotalRodadasGlobal((valor) => valor + 1);
-  }
+  }, []);
 
-  function resetarTudoGlobal() {
+  const resetarTudoGlobal = useCallback(() => {
     setSaldo(SALDO_INICIAL);
     setSaldoReal(0);
     setTotalApostadoGlobal(0);
@@ -114,19 +133,19 @@ export function DemoWalletProvider({ children }: { children: ReactNode }) {
     window.localStorage.setItem("demo-global-apostado", "0");
     window.localStorage.setItem("demo-global-ganho", "0");
     window.localStorage.setItem("demo-global-rodadas", "0");
-  }
+  }, []);
 
-  function depositar(valor: number, metodo: string) {
+  const depositar = useCallback((valor: number) => {
     setSaldoReal((prev) => prev + valor);
-  }
+  }, []);
 
-  function sacar(valor: number) {
+  const sacar = useCallback((valor: number) => {
     if (valor <= saldoReal) {
       setSaldoReal((prev) => prev - valor);
       return true;
     }
     return false;
-  }
+  }, [saldoReal]);
 
   const ranking = useMemo(() => {
     const lista = [
@@ -162,6 +181,10 @@ export function DemoWalletProvider({ children }: { children: ReactNode }) {
       totalApostadoGlobal,
       totalGanhoGlobal,
       totalRodadasGlobal,
+      registrarResultado,
+      resetarTudoGlobal,
+      depositar,
+      sacar,
     ]
   );
 

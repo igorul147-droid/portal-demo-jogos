@@ -2,7 +2,7 @@
 
 import PortalHeader from "@/components/PortalHeader";
 import Footer from "@/components/Footer";
-import { Users, Copy, CheckCircle, Gift, TrendingUp, Shield } from 'lucide-react';
+import { Users, Copy, CheckCircle } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Referencia() {
